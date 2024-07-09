@@ -5,6 +5,12 @@ class MovableObject extends DrawableObject {
   acceleration = 2.5;
   energy = 100;
   lastHit = 0;
+  offset = {
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+  };
 
   applyGravity() {
     setInterval(() => {
@@ -16,20 +22,10 @@ class MovableObject extends DrawableObject {
   }
 
   isAboveGround() {
-    return this.y < 180;
-  }
-
-  drawFrame(ctx) {
-    if (
-      this instanceof Character ||
-      this instanceof Chicken ||
-      this instanceof Endboss
-    ) {
-      ctx.beginPath();
-      ctx.lineWidth = '5';
-      ctx.strokeStyle = 'blue';
-      ctx.rect(this.x, this.y, this.width, this.height);
-      ctx.stroke();
+    if (this instanceof ThrowableObject) {
+      return true;
+    } else {
+      return this.y < 180;
     }
   }
 
