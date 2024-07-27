@@ -4,7 +4,11 @@ class MovableObject extends DrawableObject {
   speedY = 0;
   acceleration = 2.5;
   energy = 100;
+  energyEndboss = 100;
+  energyCoin = 0;
+  energyBottle = 0;
   lastHit = 0;
+  immune = false;
   offset = {
     top: 0,
     bottom: 0,
@@ -29,21 +33,87 @@ class MovableObject extends DrawableObject {
     }
   }
 
-  isColliding(moveobject) {
+  isColliding(mo) {
     return (
-      this.x + this.width >= moveobject.x &&
-      this.x <= moveobject.x + moveobject.width &&
-      this.y + this.height >= moveobject.y &&
-      this.y <= moveobject.y + moveobject.height
-    ); // Optional: hiermit könnten wir schauen, ob ein Objekt sich in die richtige Richtung bewegt. Nur dann kollidieren wir. Nützlich bei Gegenständen, auf denen man stehen kann.
+      this.x + this.width - this.offset.right > mo.x + mo.offset.left &&
+      this.y + this.height - this.offset.bottom > mo.y + mo.offset.top &&
+      this.x + this.offset.left < mo.x + mo.width - mo.offset.right &&
+      this.y + this.offset.top < mo.y + mo.height - mo.offset.bottom
+    );
   }
 
   hit() {
-    this.energy -= 5;
-    if (this.energy < 0) {
-      this.energy = 0;
-    } else {
-      this.lastHit = new Date().getTime();
+    if (!this.immune) {
+      this.immune = true;
+      this.energy -= 5;
+      if (this.energy < 0) {
+        this.energy = 0;
+      } else {
+        this.lastHit = new Date().getTime();
+        this.lastMoveTime = Date.now();
+      }
+      setTimeout(() => {
+        this.immune = false;
+      }, 1500);
+    }
+  }
+
+  bigHit() {
+    if (!this.immune) {
+      this.immune = true;
+      this.energy -= 20;
+      if (this.energy < 0) {
+        this.energy = 0;
+      } else {
+        this.lastHit = new Date().getTime();
+        this.lastMoveTime = Date.now();
+      }
+      setTimeout(() => {
+        this.immune = false;
+      }, 1500);
+    }
+  }
+
+  checkEndbossEnergy() {
+    if (this.energyEndboss <= 20 && !this.isAngry) {
+      this.isAngry = true;
+    }
+  }
+
+  hitEndboss() {
+    if (!this.immune) {
+      this.energyEndboss -= 21;
+      if (this.energyEndboss < 0) {
+        this.energyEndboss = 0;
+      } else {
+        this.lastHit = new Date().getTime();
+        this.immune = true;
+        setTimeout(() => {
+          this.immune = false;
+        }, 200);
+      }
+      this.checkEndbossEnergy();
+    }
+  }
+
+  increaseEnergyCoin() {
+    this.energyCoin += 10;
+    if (this.energyCoin > 100) {
+      this.energyCoin = 100;
+    }
+  }
+
+  increaseEnergyBottle() {
+    this.energyBottle += 20;
+    if (this.energyBottle > 100) {
+      this.energyBottle = 100;
+    }
+  }
+
+  decreaseEnergyBottle() {
+    this.energyBottle -= 20;
+    if (this.energyBottle < 0) {
+      this.energyBottle = 0;
     }
   }
 
@@ -55,6 +125,10 @@ class MovableObject extends DrawableObject {
 
   isDead() {
     return this.energy == 0;
+  }
+
+  isDeadEndboss() {
+    return this.energyEndboss == 0;
   }
 
   playAnimation(images) {

@@ -1,11 +1,11 @@
 class Coin extends MovableObject {
-  height = 90;
-  width = 90;
+  height = 130;
+  width = 130;
   offset = {
-    top: 15,
-    right: 15,
-    bottom: 15,
-    left: 15,
+    top: 43,
+    right: 43,
+    bottom: 43,
+    left: 43,
   };
 
   IMAGES_COINS = ['img/8_coin/coin_1.png', 'img/8_coin/coin_2.png'];
@@ -17,14 +17,14 @@ class Coin extends MovableObject {
   }
 
   randomPositioningCoins() {
-    this.x = 500 + Math.random() * 1800;
-    this.y = 50 + Math.random() * 200;
+    this.x = 500 + Math.random() * 1600;
+    this.y = 50 + Math.random() * 180;
   }
 
   animateCoins() {
     setInterval(() => {
       this.playAnimation(this.IMAGES_COINS);
-    }, 1000 / 60);
+    }, 500);
   }
 }
 
@@ -34,8 +34,8 @@ class Bottle extends MovableObject {
   offset = {
     top: 15,
     right: 15,
-    bottom: 15,
-    left: 15,
+    bottom: 5,
+    left: 25,
   };
 
   IMAGES_BOTTLES = [
@@ -51,12 +51,12 @@ class Bottle extends MovableObject {
 
   randomPositioningBottle() {
     this.x = 500 + Math.random() * 1800;
-    this.y = 50 + Math.random() * 200;
+    this.y = 50 + Math.random() * 100;
   }
 
   animateBottle() {
     setInterval(() => {
       this.playAnimation(this.IMAGES_BOTTLES);
-    }, 1000 / 60);
+    }, 500);
   }
 }

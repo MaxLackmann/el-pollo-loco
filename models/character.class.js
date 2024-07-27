@@ -75,6 +75,7 @@ class Character extends MovableObject {
 
   world;
   //walking_sound = new Audio('audio/running.mp3');
+  lastMoveTime = Date.now(); // Track the last time the character moved
 
   constructor() {
     super().loadImage('img/2_character_pepe/2_walk/W-21.png');
@@ -83,6 +84,7 @@ class Character extends MovableObject {
     this.loadImages(this.IMAGES_DEAD);
     this.loadImages(this.IMAGES_HURT);
     this.loadImages(this.IMAGES_IDLE);
+    this.loadImages(this.IMAGES_SLEEPING);
     this.applyGravity();
     this.animate();
   }
@@ -90,12 +92,14 @@ class Character extends MovableObject {
   animate() {
     setInterval(() => {
       //this.walking_sound.pause();
+      let moved = false;
       if (
         (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) ||
         (this.world.keyboard.D && this.x < this.world.level.level_end_x)
       ) {
         this.moveRight();
         this.otherDirection = false;
+        moved = true;
         //this.walking_sound.play();
       }
       if (
@@ -104,6 +108,7 @@ class Character extends MovableObject {
       ) {
         this.moveLeft();
         this.otherDirection = true;
+        moved = true;
         //this.walking_sound.play();
       }
       if (
@@ -112,18 +117,28 @@ class Character extends MovableObject {
         (this.world.keyboard.W && !this.isAboveGround())
       ) {
         super.jump();
+        moved = true;
+      }
+
+      if (moved) {
+        this.lastMoveTime = Date.now(); // Update the last move time
       }
 
       this.world.camera_x = -this.x + 100;
     }, 1000 / 60);
 
     setInterval(() => {
+      const currentTime = Date.now();
+      const timeSinceLastMove = currentTime - this.lastMoveTime;
+
       if (this.isDead()) {
         this.playAnimation(this.IMAGES_DEAD);
       } else if (this.isHurt()) {
         this.playAnimation(this.IMAGES_HURT);
       } else if (this.isAboveGround()) {
         this.playAnimation(this.IMAGES_JUMPING);
+      } else if (timeSinceLastMove > 3000) {
+        this.playAnimation(this.IMAGES_SLEEPING);
       } else {
         if (this.world.keyboard.LEFT || this.world.keyboard.RIGHT) {
           this.playAnimation(this.IMAGES_WALKING);
@@ -131,6 +146,6 @@ class Character extends MovableObject {
           this.playAnimation(this.IMAGES_IDLE);
         }
       }
-    }, 100);
+    }, 1000 / 5);
   }
 }

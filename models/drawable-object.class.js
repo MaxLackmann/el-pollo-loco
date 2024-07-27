@@ -6,6 +6,7 @@ class DrawableObject {
   y = 280;
   height = 150;
   width = 100;
+  visible = true;
 
   // loadImage('img/test.png')
   loadImage(path) {
@@ -14,11 +15,8 @@ class DrawableObject {
   }
 
   draw(ctx) {
-    try {
+    if (this.visible) {
       ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
-    } catch (e) {
-      console.warn('Error loading Image', e);
-      console.log('Could not load image ', this.img.src);
     }
   }
 
@@ -35,9 +33,10 @@ class DrawableObject {
       this instanceof Character ||
       this instanceof Chicken ||
       this instanceof Endboss ||
-      this instanceof SmallChicken //||
-      //this instanceof Coin ||
-      //this instanceof Bottle
+      this instanceof SmallChicken ||
+      this instanceof Coin ||
+      this instanceof Bottle ||
+      this instanceof ThrowableObject
     ) {
       ctx.beginPath();
       ctx.lineWidth = '3';

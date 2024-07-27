@@ -2,6 +2,13 @@ class Endboss extends MovableObject {
   height = 400;
   width = 300;
   y = 55;
+  speed = 0.2;
+  isDead = false;
+  isAngry = false;
+  isAttacking = false;
+  statusbarEndboss = false;
+  alertAnimationDone = false;
+  isInView = false;
   offset = {
     top: 60,
     bottom: 15,
@@ -50,16 +57,83 @@ class Endboss extends MovableObject {
     'img/4_enemie_boss_chicken/5_dead/G26.png',
   ];
 
+  startMoving() {
+    this.isInView = true;
+  }
+
   constructor() {
     super().loadImage(this.IMAGES_WALKING[0]);
     this.loadImages(this.IMAGES_WALKING);
-    this.x = 2300;
+    this.loadImages(this.IMAGES_ALERT);
+    this.loadImages(this.IMAGES_ATTACK);
+    this.loadImages(this.IMAGES_HURT);
+    this.loadImages(this.IMAGES_DEAD);
+    this.x = 2400;
     this.animate();
+  }
+
+  updateDirection(character) {
+    if (character.x < this.x) {
+      this.otherDirection = false;
+    } else {
+      this.otherDirection = true;
+    }
+  }
+
+  moveLeftBoss() {
+    if (!this.otherDirection) {
+      this.x -= this.speed;
+    } else {
+      this.x += this.speed;
+    }
   }
 
   animate() {
     setInterval(() => {
-      this.playAnimation(this.IMAGES_WALKING);
-    }, 300);
+      if (
+        this.isInView &&
+        !this.isDeadEndboss() &&
+        !this.isHurt() &&
+        (this.alertAnimationDone || (!this.isAngry && !this.isAttacking))
+      ) {
+        this.moveLeftBoss();
+      }
+    }, 1000 / 60);
+
+    setInterval(() => {
+      if (this.isDeadEndboss()) {
+        this.playAnimation(this.IMAGES_DEAD);
+      } else if (this.isHurt()) {
+        this.playAnimation(this.IMAGES_HURT);
+      } else if (this.isAngry && !this.alertAnimationDone) {
+        this.playAlertAnimation();
+      } else if (this.isAttacking) {
+        this.playAnimation(this.IMAGES_ATTACK);
+      } else {
+        this.playAnimation(this.IMAGES_WALKING);
+      }
+    }, 100);
+  }
+
+  playAlertAnimation() {
+    let i = 0;
+    const alertInterval = setInterval(() => {
+      if (i < this.IMAGES_ALERT.length) {
+        this.playAnimation(this.IMAGES_ALERT);
+        i++;
+        this.immune = true;
+        setTimeout(() => {
+          this.immune = false;
+        }, 1000);
+      } else {
+        clearInterval(alertInterval);
+        this.alertAnimationDone = true;
+        this.increaseSpeed();
+      }
+    }, 100);
+  }
+
+  increaseSpeed() {
+    this.speed *= 1.35; // Increase speed by 50%
   }
 }

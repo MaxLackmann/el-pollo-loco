@@ -3,6 +3,12 @@ class SmallChicken extends MovableObject {
   width = 55;
   y = 375;
   isDead = false;
+  offset = {
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+  };
 
   IMAGES_WALKING = [
     'img/3_enemies_chicken/chicken_small/1_walk/1_w.png',
@@ -28,7 +34,12 @@ class SmallChicken extends MovableObject {
     }, 1000 / 60);
 
     setInterval(() => {
-      this.playAnimation(this.IMAGES_WALKING);
+      if (this.isDead === false) {
+        this.playAnimation(this.IMAGES_WALKING);
+      }
+      if (this.isDead === true) {
+        this.playAnimation(this.IMAGES_DEAD);
+      }
     }, 100);
   }
 }

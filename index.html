@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html translate="no" lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -20,6 +20,7 @@
     <script src="models/world.class.js"></script>
     <script src="models/keyboard.class.js"></script>
     <script src="models/level.class.js"></script>
+    <script src="models/collectable-objects.class.js"></script>
     <script src="models/throwable-object.class.js"></script>
     <script src="models/enemies/chicken.class.js"></script>
     <script src="models/enemies/endboss.class.js"></script>
@@ -27,9 +28,89 @@
     <script src="levels/level1.js"></script>
     <script src="js/game.js"></script>
   </head>
-  <body onload="init()">
+  <body>
+    <div class="overlayMobile">
+      <img src="./img/instruction/mobile-rotate-rotation-icon.svg" alt="" />
+      <p>Please rotate your device into landscape mode</p>
+    </div>
     <h1>El pollo loco</h1>
-
-    <canvas id="canvas" width="720" height="480"></canvas>
+    <section class="game-content">
+      <div id="startGameScreen" class="startscreen-container">
+        <img
+          class="startscreen-image"
+          src="./img/9_intro_outro_screens/start/startscreen_1.png"
+          alt=""
+        />
+        <div class="startscreen-button">
+          <div class="start-button" onclick="startGame()">
+            <h4 id="backToMenuButton">Startgame</h4>
+            <img src="./img/instruction/play-circle-fill.svg" alt="" />
+          </div>
+        </div>
+        <div class="instructions">
+          <h2>INSTRUCTIONS</h2>
+          <div class="move-left">Move Left: ← | A</div>
+          <div class="move-right">Move Right: D | →</div>
+          <div class="attack">
+            Attack: F | Shift
+            <img src="" alt="" />
+          </div>
+          <div class="jump">
+            Jump: W | ↑ | Space
+            <img src="" alt="" />
+          </div>
+        </div>
+      </div>
+      <div class="sound-button">
+        <img src="./img/instruction/sound_on.svg" alt="" />
+      </div>
+      <div class="fullscreen-button" onclick="fullscreen()">
+        <img src="./img/instruction/arrows-fullscreen.svg" alt="" />
+      </div>
+      <div id="loadingScreen" class="loadingscreen-container d-none">
+        loading Chicken...
+        <img
+          src="./img/3_enemies_chicken/chicken_small/Muestra gif.gif"
+          alt=""
+        />
+      </div>
+      <div id="fullscreen" class="canvas-container d-none">
+        <canvas id="canvas" width="720" height="480"></canvas>
+      </div>
+      <div id="loseGameScreen" class="losescreen-container d-none">
+        <div class="lose-buttons">
+          <div class="back-to-menu-button" onclick="backToMenu()">
+            <h4 id="backToMenuButton">BACK TO MENU</h4>
+            <img src="./img/instruction/back_to_menu.svg" alt="" />
+          </div>
+          <div class="try-again-button" onclick="restartGame()">
+            <h4 id="tryAgainButton">TRY AGAIN</h4>
+            <img src="./img/instruction/restart.svg" alt="" />
+          </div>
+        </div>
+        <img
+          class="lose-image"
+          src="./img/9_intro_outro_screens/game_over/oh no you lost!.png"
+          alt=""
+        />
+      </div>
+      <div id="winGameScreen" class="winscreen-container d-none">
+        <div class="win-buttons">
+          <div class="back-to-menu-button" onclick="backToMenu()">
+            <h4 id="backToMenuButton">BACK TO MENU</h4>
+            <img src="./img/instruction/back_to_menu.svg" alt="" />
+          </div>
+          <div class="try-again-button" onclick="restartGame()">
+            <h4 id="tryAgainButton">RESTART</h4>
+            <img src="./img/instruction/restart.svg" alt="" />
+          </div>
+        </div>
+        <img
+          class="win-image"
+          src="./img/9_intro_outro_screens/win/win_1.png"
+          alt=""
+        />
+      </div>
+    </section>
   </body>
 </html>
