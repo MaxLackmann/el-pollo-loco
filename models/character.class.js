@@ -11,9 +11,9 @@ class Character extends MovableObject {
   };
 
   walkingSound = new Audio('audio/character_walking.mp3');
-  lastMoveTime = Date.now();
   sleepingSound = new Audio('audio/character_sleeping.mp3');
   jumpingSound = new Audio('audio/character_jumping.mp3');
+  lastMoveTime = Date.now();
 
   IMAGES_WALKING = [
     'img/2_character_pepe/2_walk/W-21.png',

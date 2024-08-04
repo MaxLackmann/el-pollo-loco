@@ -1,32 +1,36 @@
 let canvas;
 let world;
 let keyboard = new Keyboard();
-let backgroundSound = new Audio('audio/background.mp3');
-backgroundSound.loop = true;
-let startGameSound = new Audio('audio/start_char.mp3');
 let isMuted = false;
-let allSounds = function toggleMute() {
-  isMuted = !isMuted;
-  let muteIcon = document.getElementById('muteIcon');
+let backgroundSound = new Audio('audio/background.mp3');
+let startGameSound = new Audio('audio/start_char.mp3');
+backgroundSound.loop = true;
 
-  if (isMuted) {
-    muteIcon.src = './img/instruction/sound_off.svg';
-    allSounds.forEach((sound) => {
-      sound.pause();
-      sound.currentTime = 0; // Startet den Sound neu, wenn er wieder eingeschaltet wird
-    });
-  } else {
-    muteIcon.src = './img/instruction/sound_on.svg';
-    allSounds.forEach((sound) => {
-      sound.play();
-      sound.loop = true; // Wenn die Sounds geloopt werden sollen, setzen Sie loop auf true
-    });
-  }
-};
+let sounds = [
+  backgroundSound,
+  startGameSound,
+  Character.walkingSound,
+  Character.jumpingSound,
+  Character.sleepingSound,
+];
 
 function init() {
   canvas = document.getElementById('canvas');
   world = new World(canvas, keyboard);
+}
+
+function toggleMute() {
+  isMuted = !isMuted;
+  sounds.forEach((sound) => {
+    sound.muted = isMuted;
+  });
+
+  const muteIcon = document.getElementById('muteIcon');
+  if (isMuted) {
+    muteIcon.src = './img/instruction/sound_off.svg';
+  } else {
+    muteIcon.src = './img/instruction/sound_on.svg';
+  }
 }
 
 function startGame() {
@@ -95,6 +99,8 @@ function winGame() {
   document.getElementById('mobileButtons').classList.add('d-none');
   stopGame();
   exitFullScreen();
+  backgroundSound.pause(); // Stop the when returning to the menu
+  backgroundSound.currentTime = 0; // Reset the sound
 }
 
 function loseGame() {
@@ -102,6 +108,8 @@ function loseGame() {
   document.getElementById('mobileButtons').classList.add('d-none');
   stopGame();
   exitFullScreen();
+  backgroundSound.pause(); // Stop the when returning to the menu
+  backgroundSound.currentTime = 0; // Reset the sound
 }
 
 function stopGame() {
@@ -113,6 +121,12 @@ function stopGame() {
 function restartGame() {
   document.getElementById('loseGameScreen').classList.add('d-none');
   document.getElementById('winGameScreen').classList.add('d-none');
+  world.loseSound.pause();
+  world.loseSound.currentTime = 0;
+  world.winSound.pause();
+  world.winSound.currentTime = 0;
+  world.winSound2.pause();
+  world.winSound2.currentTime = 0;
   startGame();
 }
 
@@ -122,6 +136,10 @@ function backToMenu() {
   document.getElementById('gameScreen').classList.add('d-none');
   document.getElementById('fullscreenButton').classList.add('d-none');
   document.getElementById('startGameScreen').classList.remove('d-none');
-  backgroundSound.pause(); // Sound stoppen, wenn zum Menü zurückgekehrt wird
-  backgroundSound.currentTime = 0; // Den Sound zurücksetzen
+  world.loseSound.pause();
+  world.loseSound.currentTime = 0;
+  world.winSound.pause();
+  world.winSound.currentTime = 0;
+  world.winSound2.pause();
+  world.winSound2.currentTime = 0;
 }
