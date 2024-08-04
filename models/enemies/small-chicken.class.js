@@ -9,6 +9,7 @@ class SmallChicken extends MovableObject {
     left: 0,
     right: 0,
   };
+  chickenWalkingSound = new Audio('audio/chicken_walking.mp3');
 
   IMAGES_WALKING = [
     'img/3_enemies_chicken/chicken_small/1_walk/1_w.png',
@@ -23,7 +24,7 @@ class SmallChicken extends MovableObject {
     this.loadImages(this.IMAGES_WALKING);
     this.loadImages(this.IMAGES_DEAD);
 
-    this.x = 300 + Math.random() * 1500;
+    this.x = 500 + Math.random() * 1800;
     this.speed = 0.15 + Math.random() * 0.5;
     this.animate();
   }
@@ -31,6 +32,8 @@ class SmallChicken extends MovableObject {
   animate() {
     setInterval(() => {
       this.moveLeft();
+      this.chickenWalkingSound.play();
+      this.chickenWalkingSound.volume = 0.1;
     }, 1000 / 60);
 
     setInterval(() => {

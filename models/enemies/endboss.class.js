@@ -2,7 +2,7 @@ class Endboss extends MovableObject {
   height = 400;
   width = 300;
   y = 55;
-  speed = 0.2;
+  speed = 1;
   isDead = false;
   isAngry = false;
   isAttacking = false;
@@ -68,7 +68,7 @@ class Endboss extends MovableObject {
     this.loadImages(this.IMAGES_ATTACK);
     this.loadImages(this.IMAGES_HURT);
     this.loadImages(this.IMAGES_DEAD);
-    this.x = 2400;
+    this.x = 2300;
     this.animate();
   }
 
@@ -103,7 +103,7 @@ class Endboss extends MovableObject {
     setInterval(() => {
       if (this.isDeadEndboss()) {
         this.playAnimation(this.IMAGES_DEAD);
-      } else if (this.isHurt()) {
+      } else if (this.isHurt() && !this.isAngry) {
         this.playAnimation(this.IMAGES_HURT);
       } else if (this.isAngry && !this.alertAnimationDone) {
         this.playAlertAnimation();
@@ -134,6 +134,6 @@ class Endboss extends MovableObject {
   }
 
   increaseSpeed() {
-    this.speed *= 1.35; // Increase speed by 50%
+    this.speed *= 1.25;
   }
 }

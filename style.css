@@ -27,6 +27,8 @@ h1 {
   max-width: 720px;
   height: 480px;
   margin: auto;
+  border-radius: 20px;
+  box-shadow: 0px 0px 9px 10px rgba(0, 0, 0, 0.75);
 }
 
 .startscreen-container {
@@ -64,7 +66,7 @@ h1 {
 
 .start-button:hover {
   cursor: pointer;
-  background-color: #bb8000;
+  background-color: #987a01;
 }
 
 .start-button h4 {
@@ -92,7 +94,8 @@ h1 {
   border-bottom-left-radius: 20px;
   border-bottom-right-radius: 20px;
   padding: 10px 0;
-  border: 2px solid black;
+  border: 1px solid black;
+  box-shadow: 0px 0px 9px 10px rgba(0, 0, 0, 0.75);
   font-size: 20px;
 }
 
@@ -105,7 +108,7 @@ h1 {
 .sound-button {
   position: absolute;
   top: 20px;
-  right: 70px;
+  right: 20px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -128,7 +131,7 @@ h1 {
 .fullscreen-button {
   position: absolute;
   top: 20px;
-  right: 20px;
+  right: 70px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -149,9 +152,11 @@ h1 {
 }
 
 .loadingscreen-container {
-  max-width: 720px;
-  height: 480px;
-  position: relative;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  z-index: 10;
   border-radius: 20px;
   background-color: white;
   display: flex;
@@ -164,6 +169,10 @@ h1 {
 .loadingscreen-container img {
   height: 300px;
   width: 300px;
+}
+
+.canvas-container {
+  position: absolute;
 }
 
 .losescreen-container {
@@ -192,7 +201,7 @@ h1 {
 }
 
 .try-again-button {
-  background-color: #ffd608;
+  background-color: #feae00;
   display: flex;
   align-items: center;
   border-radius: 10px;
@@ -202,7 +211,7 @@ h1 {
 }
 
 .try-again-button:hover {
-  background-color: #b79200;
+  background-color: #987a01;
   cursor: pointer;
 }
 
@@ -211,7 +220,7 @@ h1 {
 }
 
 .back-to-menu-button {
-  background-color: #ffd608;
+  background-color: #feae00;
   display: flex;
   align-items: center;
   border-radius: 10px;
@@ -221,7 +230,7 @@ h1 {
 }
 
 .back-to-menu-button:hover {
-  background-color: #b79200;
+  background-color: #987a01;
   cursor: pointer;
 }
 
@@ -262,7 +271,7 @@ h1 {
   position: relative;
   box-sizing: border-box;
   padding: 0 20px;
-  top: 35%;
+  top: 25%;
   width: 100%;
 }
 
@@ -283,6 +292,49 @@ h1 {
 .overlayMobile img {
   height: 300px;
   width: 300px;
+}
+
+.mobile-buttons {
+  box-sizing: border-box;
+  position: absolute;
+  bottom: 40px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 40px;
+  z-index: 20;
+  gap: 16px;
+}
+
+.mobile-animation {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.move-mobile {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.mobile-attack-button {
+  height: 50px;
+  width: 50px;
+  background-color: #feae00;
+  border: 2px solid black;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.mobile-move-button {
+  height: 32px;
+  width: 32px;
+  background-color: #feae00;
+  border: 2px solid black;
+  border-radius: 10px;
+  padding: 10px;
 }
 
 .d-none {
@@ -337,4 +389,8 @@ canvas {
   .overlayMobile {
     display: none;
   }
+
+  /*.move-mobile {
+    display: none;
+  }*/
 }

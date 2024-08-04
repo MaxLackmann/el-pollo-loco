@@ -2,7 +2,7 @@ class World {
   character = new Character();
   level = level1;
   canvas;
-  ctx; // ctx = context
+  ctx;
   keyboard;
   camera_x = 0;
   statusBar = new Statusbar();
@@ -14,6 +14,16 @@ class World {
   collectedBottles = [];
   maxBottles = 5;
   endBossActivated = false;
+  lastThrowTime = 0;
+  hitBottleSound = new Audio('audio/bottle_hit.mp3');
+  bossSound = new Audio('audio/boss.mp3');
+  bottleSound = new Audio('audio/throw.mp3');
+  coinSound = new Audio('audio/picked_coin.mp3');
+  bottleSound = new Audio('audio/picked_bottle.mp3');
+  winSound = new Audio('audio/win.mp3');
+  winSound2 = new Audio('audio/win2.mp3');
+  loseSound = new Audio('audio/lose.mp3');
+  enemiesDeadSound = new Audio('audio/enemies_dead.mp3');
 
   constructor(canvas, keyboard) {
     this.ctx = canvas.getContext('2d');
@@ -34,16 +44,44 @@ class World {
         this.checkCollisions();
         this.checkCollisionsThrowableObjectsEnemies();
       }, 10);
-
       this.checkThrowObjects();
       this.checkCollisionsCoins();
       this.checkCollisionsBottles();
-
       this.checkCollisionsThrowableObjectsEndBoss();
       this.checkEndbossInRange();
       this.updateEndbossDirection();
       this.checkCollisionsWithEndboss();
+      this.checkGameOver();
     }, 200);
+  }
+
+  checkGameOver() {
+    if (this.character.energy <= 0) {
+      this.loseGame();
+    }
+
+    this.level.endboss.forEach((endboss) => {
+      if (endboss.energyEndboss <= 0) {
+        this.winGame();
+      }
+    });
+  }
+
+  loseGame() {
+    setTimeout(() => {
+      loseGame();
+      this.loseSound.play();
+    }, 700);
+  }
+
+  winGame() {
+    setTimeout(() => {
+      winGame();
+      this.winSound.play();
+      setTimeout(() => {
+        this.winSound2.play();
+      }, 3000);
+    }, 700);
   }
 
   updateEndbossDirection() {
@@ -59,6 +97,7 @@ class World {
           this.character.x + this.canvas.width > endboss.x &&
           this.character.x < endboss.x + endboss.width
         ) {
+          this.bossSound.play();
           this.statusBarEndboss.show();
           endboss.startMoving();
           this.endbossActivated = true;
@@ -71,10 +110,14 @@ class World {
     this.throwableObjects.forEach((throwableObject) => {
       this.level.endboss.forEach((endboss) => {
         if (throwableObject.isColliding(endboss)) {
+          this.hitBottleSound.pause(); // Stop the sound if it's already
+          this.hitBottleSound.currentTime = 0; // Reset the sound to the beginning
+          this.hitBottleSound.play(); // Play the sound
           this.throwableObjects.splice(
             this.throwableObjects.indexOf(throwableObject),
             1
           );
+
           endboss.hitEndboss();
           this.statusBarEndboss.setEndbossPercentage(endboss.energyEndboss);
         }
@@ -86,6 +129,9 @@ class World {
     this.throwableObjects.forEach((throwableObject) => {
       this.level.enemies.forEach((enemy) => {
         if (throwableObject.isColliding(enemy)) {
+          this.hitBottleSound.pause(); // Stop the sound if it's already
+          this.hitBottleSound.currentTime = 0; // Reset the sound to the beginning
+          this.hitBottleSound.play(); // Play the sound
           this.throwableObjects.splice(
             this.throwableObjects.indexOf(throwableObject),
             1
@@ -100,18 +146,24 @@ class World {
   }
 
   checkThrowObjects() {
-    if (this.keyboard.F || this.keyboard.SHIFT) {
+    const now = Date.now();
+    if (
+      (this.keyboard.F || this.keyboard.SHIFT) &&
+      now - this.lastThrowTime > 500
+    ) {
       if (this.collectedBottles.length > 0) {
         let bottle = new ThrowableObject(
           this.character.x + 100,
           this.character.y + 100,
           this.character.otherDirection
         );
+        this.bottleSound.play();
         this.throwableObjects.push(bottle);
         this.collectedBottles.pop();
         this.character.decreaseEnergyBottle();
         this.statusBarBottle.setBottlePercentage(this.character.energyBottle);
         this.character.lastMoveTime = Date.now();
+        this.lastThrowTime = now;
       }
     }
   }
@@ -120,6 +172,9 @@ class World {
     this.level.enemies.forEach((enemy) => {
       if (this.character.isColliding(enemy)) {
         if (this.character.speedY < 0 && this.character.isAboveGround()) {
+          this.enemiesDeadSound.pause(); // Stop the sound if it's already
+          this.enemiesDeadSound.currentTime = 0; // Reset the sound to the beginning
+          this.enemiesDeadSound.play(); // Play the sound
           this.character.speedY = 20; // Bounce back
           enemy.isDead = true;
           this.character.immune = true;
@@ -156,6 +211,7 @@ class World {
   checkCollisionsCoins() {
     this.level.coins.forEach((coin) => {
       if (this.character.isColliding(coin)) {
+        this.coinSound.play();
         this.level.coins.splice(this.level.coins.indexOf(coin), 1);
         this.character.increaseEnergyCoin();
         this.statusBarCoin.setCoinPercentage(this.character.energyCoin);
@@ -170,6 +226,7 @@ class World {
     this.level.bottles.forEach((bottle) => {
       if (this.character.isColliding(bottle)) {
         if (this.collectedBottles.length < this.maxBottles) {
+          this.bottleSound.play();
           this.level.bottles.splice(this.level.bottles.indexOf(bottle), 1);
           this.collectedBottles.push(bottle);
           this.character.increaseEnergyBottle();
@@ -181,30 +238,22 @@ class World {
 
   draw() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
     this.ctx.translate(this.camera_x, 0);
-
     this.addObjectsToMap(this.level.backgroundObjects);
     this.addToMap(this.character);
     this.addObjectsToMap(this.level.endboss);
     this.addObjectsToMap(this.level.clouds);
-
     this.ctx.translate(-this.camera_x, 0);
-    // ------ space for fixed objects ------
     this.addToMap(this.statusBar);
     this.addToMap(this.statusBarCoin);
     this.addToMap(this.statusBarBottle);
     this.addToMap(this.statusBarEndboss);
     this.ctx.translate(this.camera_x, 0);
-
     this.addObjectsToMap(this.level.enemies);
-
     this.addObjectsToMap(this.throwableObjects);
     this.addObjectsToMap(this.level.coins);
     this.addObjectsToMap(this.level.bottles);
-
     this.ctx.translate(-this.camera_x, 0);
-
     let self = this;
     requestAnimationFrame(function () {
       self.draw();

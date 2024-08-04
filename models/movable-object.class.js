@@ -16,6 +16,11 @@ class MovableObject extends DrawableObject {
     right: 0,
   };
 
+  bossAngrySound = new Audio('audio/boss_angry.mp3');
+  bossHitSound = new Audio('audio/boss_hit.mp3');
+  bossAttackSound = new Audio('audio/boss_attack.mp3');
+  characterHitSound = new Audio('audio/character_hit.mp3');
+
   applyGravity() {
     setInterval(() => {
       if (this.isAboveGround() || this.speedY > 0) {
@@ -46,6 +51,9 @@ class MovableObject extends DrawableObject {
     if (!this.immune) {
       this.immune = true;
       this.energy -= 5;
+      this.characterHitSound.pause();
+      this.characterHitSound.currentTime = 0;
+      this.characterHitSound.play();
       if (this.energy < 0) {
         this.energy = 0;
       } else {
@@ -54,7 +62,7 @@ class MovableObject extends DrawableObject {
       }
       setTimeout(() => {
         this.immune = false;
-      }, 1500);
+      }, 1000);
     }
   }
 
@@ -62,6 +70,9 @@ class MovableObject extends DrawableObject {
     if (!this.immune) {
       this.immune = true;
       this.energy -= 20;
+      this.bossAttackSound.pause();
+      this.bossAttackSound.currentTime = 0;
+      this.bossAttackSound.play();
       if (this.energy < 0) {
         this.energy = 0;
       } else {
@@ -70,7 +81,7 @@ class MovableObject extends DrawableObject {
       }
       setTimeout(() => {
         this.immune = false;
-      }, 1500);
+      }, 1000);
     }
   }
 
@@ -93,6 +104,15 @@ class MovableObject extends DrawableObject {
         }, 200);
       }
       this.checkEndbossEnergy();
+      if (this.isAngry && this.energyEndboss <= 20) {
+        this.bossAngrySound.pause(); // Stop the sound if it's already playing
+        this.bossAngrySound.currentTime = 0; // Reset the sound to the beginning
+        this.bossAngrySound.play(); // Play the angry sound
+      } else {
+        this.bossHitSound.pause(); // Stop the sound if it's already playing
+        this.bossHitSound.currentTime = 0; // Reset the sound to the beginning
+        this.bossHitSound.play(); // Play the hit sound
+      }
     }
   }
 

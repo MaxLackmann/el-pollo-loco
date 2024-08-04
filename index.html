@@ -13,7 +13,6 @@
     <script src="models/drawable-object.class.js"></script>
     <script src="models/movable-object.class.js"></script>
     <script src="models/character.class.js"></script>
-
     <script src="models/cloud.class.js"></script>
     <script src="models/background-object.class.js"></script>
     <script src="models/status-bar.class.js"></script>
@@ -41,8 +40,8 @@
           src="./img/9_intro_outro_screens/start/startscreen_1.png"
           alt=""
         />
-        <div class="startscreen-button">
-          <div class="start-button" onclick="startGame()">
+        <div class="startscreen-button" onclick="startGame()">
+          <div class="start-button">
             <h4 id="backToMenuButton">Startgame</h4>
             <img src="./img/instruction/play-circle-fill.svg" alt="" />
           </div>
@@ -62,9 +61,18 @@
         </div>
       </div>
       <div class="sound-button">
-        <img src="./img/instruction/sound_on.svg" alt="" />
+        <img
+          onclick="toggleMute()"
+          id="muteIcon"
+          src="./img/instruction/sound_on.svg"
+          alt=""
+        />
       </div>
-      <div class="fullscreen-button" onclick="fullscreen()">
+      <div
+        id="fullscreenButton"
+        class="fullscreen-button d-none"
+        onclick="fullscreen()"
+      >
         <img src="./img/instruction/arrows-fullscreen.svg" alt="" />
       </div>
       <div id="loadingScreen" class="loadingscreen-container d-none">
@@ -74,7 +82,7 @@
           alt=""
         />
       </div>
-      <div id="fullscreen" class="canvas-container d-none">
+      <div id="gameScreen" class="canvas-container d-none">
         <canvas id="canvas" width="720" height="480"></canvas>
       </div>
       <div id="loseGameScreen" class="losescreen-container d-none">
@@ -110,6 +118,36 @@
           src="./img/9_intro_outro_screens/win/win_1.png"
           alt=""
         />
+      </div>
+      <div id="mobileButtons" class="mobile-buttons d-none">
+        <div class="mobile-animation">
+          <img
+            class="mobile-attack-button"
+            id="mobileJump"
+            src="./img/2_character_pepe/3_jump/J-34.png"
+            alt=""
+          />
+          <img
+            class="mobile-attack-button"
+            id="mobileThrow"
+            src="./img/6_salsa_bottle/2_salsa_bottle_on_ground.png"
+            alt=""
+          />
+        </div>
+        <div class="move-mobile">
+          <img
+            class="mobile-move-button"
+            id="mobileLeft"
+            src="./img/instruction/mobile-left.svg"
+            alt=""
+          />
+          <img
+            class="mobile-move-button"
+            id="mobileRight"
+            src="./img/instruction/mobile-right.svg"
+            alt=""
+          />
+        </div>
       </div>
     </section>
   </body>
