@@ -1,18 +1,15 @@
 let canvas;
 let world;
 let keyboard = new Keyboard();
-let isMuted = false;
-let backgroundSound = new Audio('audio/background.mp3');
-let startGameSound = new Audio('audio/start_char.mp3');
-backgroundSound.loop = true;
+let audio = new Audio();
+let isMuted = true;
+//let backgroundSound = new Audio('audio/background.mp3');
+//let startGameSound = new Audio('audio/start_char.mp3');
+audio.backgroundSound.loop = true;
 
-let sounds = [
-  backgroundSound,
-  startGameSound,
-  Character.walkingSound,
-  Character.jumpingSound,
-  Character.sleepingSound,
-];
+let sounds = [backgroundSound, startGameSound];
+let soundPositions = { backgroundSound: 0, startGameSound: 0 };
+let startGameSoundPlayed = false;
 
 function init() {
   canvas = document.getElementById('canvas');
@@ -22,7 +19,23 @@ function init() {
 function toggleMute() {
   isMuted = !isMuted;
   sounds.forEach((sound) => {
-    sound.muted = isMuted;
+    if (isMuted) {
+      // Speichern der aktuellen Zeit, falls sie gültig ist
+      soundPositions[sound.src] = sound.currentTime || 0; // Wenn sound.currentTime ungültig ist, wird 0 verwendet
+      if (sound === audio.startGameSound) {
+        sound.volume = 0; // Lautstärke auf 0 setzen, um den Ton auszuschalten
+      } else {
+        sound.pause(); // Pausiere andere Sounds
+      }
+    } else {
+      // Wiederherstellen der gespeicherten Zeit, falls sie gültig ist
+      sound.currentTime = soundPositions[sound.src] || 0; // Wenn soundPositions[sound.src] ungültig ist, wird 0 verwendet
+      if (sound === audio.startGameSound) {
+        sound.volume = 1; // Lautstärke auf 1 setzen, um den Ton einzuschalten
+      } else {
+        sound.play(); // Spiele andere Sounds ab
+      }
+    }
   });
 
   const muteIcon = document.getElementById('muteIcon');
@@ -38,15 +51,19 @@ function startGame() {
   loadingScreen();
   initLevel();
   init();
-  if (backgroundSound.paused) {
-    backgroundSound.play();
+  if (!isMuted && backgroundSound.paused) {
+    //audio.backgroundSound
+    backgroundSound.play(); //audio.backgroundSound
   }
 }
 
 function loadingScreen() {
   document.getElementById('loadingScreen').classList.remove('d-none');
   setTimeout(() => {
-    startGameSound.play();
+    if (!isMuted) {
+      //startGameSound.play();
+      audio.startGameSound.play();
+    }
     document.getElementById('loadingScreen').classList.add('d-none');
     document.getElementById('mobileButtons').classList.remove('d-none');
     document.getElementById('fullscreenButton').classList.remove('d-none');
@@ -99,8 +116,10 @@ function winGame() {
   document.getElementById('mobileButtons').classList.add('d-none');
   stopGame();
   exitFullScreen();
-  backgroundSound.pause(); // Stop the when returning to the menu
-  backgroundSound.currentTime = 0; // Reset the sound
+  //backgroundSound.pause(); // Stop the when returning to the menu
+  //backgroundSound.currentTime = 0; // Reset the sound
+  audio.backgroundSound.pause(); // Stop the when returning to the menu
+  audio.backgroundSound.currentTime = 0; // Reset the sound
 }
 
 function loseGame() {
@@ -108,8 +127,10 @@ function loseGame() {
   document.getElementById('mobileButtons').classList.add('d-none');
   stopGame();
   exitFullScreen();
-  backgroundSound.pause(); // Stop the when returning to the menu
-  backgroundSound.currentTime = 0; // Reset the sound
+  //backgroundSound.pause(); // Stop the when returning to the menu
+  //backgroundSound.currentTime = 0; // Reset the sound
+  audio.backgroundSound.pause(); // Stop the when returning to the menu
+  audio.backgroundSound.currentTime = 0; // Reset the sound
 }
 
 function stopGame() {
@@ -121,12 +142,19 @@ function stopGame() {
 function restartGame() {
   document.getElementById('loseGameScreen').classList.add('d-none');
   document.getElementById('winGameScreen').classList.add('d-none');
-  world.loseSound.pause();
-  world.loseSound.currentTime = 0;
-  world.winSound.pause();
-  world.winSound.currentTime = 0;
-  world.winSound2.pause();
-  world.winSound2.currentTime = 0;
+  //loseSound.pause();
+  //loseSound.currentTime = 0;
+  //winSound.pause();
+  //winSound.currentTime = 0;
+  //winSound2.pause();
+  //winSound2.currentTime = 0;
+  audio.loseSound.pause();
+  audio.loseSound.currentTime = 0;
+  audio.winSound.pause();
+  audio.winSound.currentTime = 0;
+  audio.winSound2.pause();
+  audio.winSound2.currentTime = 0;
+
   startGame();
 }
 
@@ -136,10 +164,16 @@ function backToMenu() {
   document.getElementById('gameScreen').classList.add('d-none');
   document.getElementById('fullscreenButton').classList.add('d-none');
   document.getElementById('startGameScreen').classList.remove('d-none');
-  world.loseSound.pause();
-  world.loseSound.currentTime = 0;
-  world.winSound.pause();
-  world.winSound.currentTime = 0;
-  world.winSound2.pause();
-  world.winSound2.currentTime = 0;
+  //loseSound.pause();
+  //loseSound.currentTime = 0;
+  //winSound.pause();
+  //winSound.currentTime = 0;
+  //winSound2.pause();
+  //winSound2.currentTime = 0;
+  audio.loseSound.pause();
+  audio.loseSound.currentTime = 0;
+  audio.winSound.pause();
+  audio.winSound.currentTime = 0;
+  audio.winSound2.pause();
+  audio.winSound2.currentTime = 0;
 }

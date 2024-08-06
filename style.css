@@ -116,6 +116,8 @@ h1 {
   border-radius: 20px;
   z-index: 10;
   opacity: 0.7;
+  height: 32px;
+  width: 32px;
 }
 
 .sound-button:hover {

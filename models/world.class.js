@@ -4,6 +4,7 @@ class World {
   canvas;
   ctx;
   keyboard;
+  audio;
   camera_x = 0;
   statusBar = new Statusbar();
   statusBarCoin = new StatusbarCoin();
@@ -15,20 +16,21 @@ class World {
   maxBottles = 5;
   endBossActivated = false;
   lastThrowTime = 0;
-  hitBottleSound = new Audio('audio/bottle_hit.mp3');
-  bossSound = new Audio('audio/boss.mp3');
-  bottleSound = new Audio('audio/throw.mp3');
-  coinSound = new Audio('audio/picked_coin.mp3');
-  bottleSound = new Audio('audio/picked_bottle.mp3');
-  winSound = new Audio('audio/win.mp3');
-  winSound2 = new Audio('audio/win2.mp3');
-  loseSound = new Audio('audio/lose.mp3');
-  enemiesDeadSound = new Audio('audio/enemies_dead.mp3');
+  //hitBottleSound = new Audio('audio/bottle_hit.mp3');
+  //bossSound = new Audio('audio/boss.mp3');
+  //throwBottleSound = new Audio('audio/throw.mp3');
+  //coinSound = new Audio('audio/picked_coin.mp3');
+  //bottleSound = new Audio('audio/picked_bottle.mp3');
+  //winSound = new Audio('audio/win.mp3');
+  //winSound2 = new Audio('audio/win2.mp3');
+  //loseSound = new Audio('audio/lose.mp3');
+  //enemiesDeadSound = new Audio('audio/enemies_dead.mp3');
 
-  constructor(canvas, keyboard) {
+  constructor(canvas, keyboard, audio) {
     this.ctx = canvas.getContext('2d');
     this.canvas = canvas;
     this.keyboard = keyboard;
+    this.audio = audio;
     this.draw();
     this.setWorld();
     this.run();
@@ -70,17 +72,22 @@ class World {
   loseGame() {
     setTimeout(() => {
       loseGame();
-      this.loseSound.play();
+      //this.loseSound.play();
+      //this.character.sleepingSound.pause();
+      this.audio.loseSound.play();
+      this.audio.character.sleepingSound.pause();
     }, 700);
   }
 
   winGame() {
     setTimeout(() => {
       winGame();
-      this.winSound.play();
-      setTimeout(() => {
-        this.winSound2.play();
-      }, 3000);
+      //this.winSound.play();
+      //this.winSound2.play();
+      //this.character.sleepingSound.pause();
+      this.audio.winSound.play();
+      this.audio.winSound2.play();
+      this.audio.character.sleepingSound.pause();
     }, 700);
   }
 
@@ -97,7 +104,8 @@ class World {
           this.character.x + this.canvas.width > endboss.x &&
           this.character.x < endboss.x + endboss.width
         ) {
-          this.bossSound.play();
+          //this.bossSound.play();
+          this.audio.bossSound.play();
           this.statusBarEndboss.show();
           endboss.startMoving();
           this.endbossActivated = true;
@@ -110,14 +118,16 @@ class World {
     this.throwableObjects.forEach((throwableObject) => {
       this.level.endboss.forEach((endboss) => {
         if (throwableObject.isColliding(endboss)) {
-          this.hitBottleSound.pause(); // Stop the sound if it's already
-          this.hitBottleSound.currentTime = 0; // Reset the sound to the beginning
-          this.hitBottleSound.play(); // Play the sound
+          //this.hitBottleSound.pause(); // Stop the sound if it's already
+          //this.hitBottleSound.currentTime = 0; // Reset the sound to the beginning
+          //this.hitBottleSound.play(); // Play the sound
+          this.audio.hitBottleSound.pause(); // Stop the sound if it's already
+          this.audio.hitBottleSound.currentTime = 0; // Reset the sound to the beginning
+          this.audio.hitBottleSound.play(); // Play the sound
           this.throwableObjects.splice(
             this.throwableObjects.indexOf(throwableObject),
             1
           );
-
           endboss.hitEndboss();
           this.statusBarEndboss.setEndbossPercentage(endboss.energyEndboss);
         }
@@ -129,9 +139,12 @@ class World {
     this.throwableObjects.forEach((throwableObject) => {
       this.level.enemies.forEach((enemy) => {
         if (throwableObject.isColliding(enemy)) {
-          this.hitBottleSound.pause(); // Stop the sound if it's already
-          this.hitBottleSound.currentTime = 0; // Reset the sound to the beginning
-          this.hitBottleSound.play(); // Play the sound
+          //this.hitBottleSound.pause(); // Stop the sound if it's already
+          //this.hitBottleSound.currentTime = 0; // Reset the sound to the beginning
+          //this.hitBottleSound.play(); // Play the sound
+          this.audio.hitBottleSound.pause(); // Stop the sound if it's already
+          this.audio.hitBottleSound.currentTime = 0; // Reset the sound to the beginning
+          this.audio.hitBottleSound.play(); // Play the sound
           this.throwableObjects.splice(
             this.throwableObjects.indexOf(throwableObject),
             1
@@ -157,7 +170,8 @@ class World {
           this.character.y + 100,
           this.character.otherDirection
         );
-        this.bottleSound.play();
+        //this.throwBottleSound.play();
+        this.audio.throwBottleSound.play();
         this.throwableObjects.push(bottle);
         this.collectedBottles.pop();
         this.character.decreaseEnergyBottle();
@@ -172,9 +186,12 @@ class World {
     this.level.enemies.forEach((enemy) => {
       if (this.character.isColliding(enemy)) {
         if (this.character.speedY < 0 && this.character.isAboveGround()) {
-          this.enemiesDeadSound.pause(); // Stop the sound if it's already
-          this.enemiesDeadSound.currentTime = 0; // Reset the sound to the beginning
-          this.enemiesDeadSound.play(); // Play the sound
+          //this.enemiesDeadSound.pause(); // Stop the sound if it's already
+          //this.enemiesDeadSound.currentTime = 0; // Reset the sound to the beginning
+          //this.enemiesDeadSound.play(); // Play the sound
+          this.audio.enemiesDeadSound.pause(); // Stop the sound if it's already
+          this.audio.enemiesDeadSound.currentTime = 0; // Reset the sound to the beginning
+          this.audio.enemiesDeadSound.play(); // Play the sound
           this.character.speedY = 20; // Bounce back
           enemy.isDead = true;
           this.character.immune = true;
@@ -211,7 +228,8 @@ class World {
   checkCollisionsCoins() {
     this.level.coins.forEach((coin) => {
       if (this.character.isColliding(coin)) {
-        this.coinSound.play();
+        //this.coinSound.play();
+        this.audio.coinSound.play();
         this.level.coins.splice(this.level.coins.indexOf(coin), 1);
         this.character.increaseEnergyCoin();
         this.statusBarCoin.setCoinPercentage(this.character.energyCoin);
@@ -226,7 +244,8 @@ class World {
     this.level.bottles.forEach((bottle) => {
       if (this.character.isColliding(bottle)) {
         if (this.collectedBottles.length < this.maxBottles) {
-          this.bottleSound.play();
+          //this.bottleSound.play();
+          this.audio.bottleSound.play();
           this.level.bottles.splice(this.level.bottles.indexOf(bottle), 1);
           this.collectedBottles.push(bottle);
           this.character.increaseEnergyBottle();

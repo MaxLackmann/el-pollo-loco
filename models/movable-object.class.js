@@ -16,10 +16,10 @@ class MovableObject extends DrawableObject {
     right: 0,
   };
 
-  bossAngrySound = new Audio('audio/boss_angry.mp3');
-  bossHitSound = new Audio('audio/boss_hit.mp3');
-  bossAttackSound = new Audio('audio/boss_attack.mp3');
-  characterHitSound = new Audio('audio/character_hit.mp3');
+  //bossAngrySound = new Audio('audio/boss_angry.mp3');
+  //bossHitSound = new Audio('audio/boss_hit.mp3');
+  //bossAttackSound = new Audio('audio/boss_attack.mp3');
+  //characterHitSound = new Audio('audio/character_hit.mp3');
 
   applyGravity() {
     setInterval(() => {
@@ -51,9 +51,12 @@ class MovableObject extends DrawableObject {
     if (!this.immune) {
       this.immune = true;
       this.energy -= 5;
-      this.characterHitSound.pause();
-      this.characterHitSound.currentTime = 0;
-      this.characterHitSound.play();
+      //this.characterHitSound.pause();
+      //this.characterHitSound.currentTime = 0;
+      //this.characterHitSound.play();
+      this.audio.characterHitSound.pause();
+      this.audio.characterHitSound.currentTime = 0;
+      this.audio.characterHitSound.play();
       if (this.energy < 0) {
         this.energy = 0;
       } else {
@@ -70,9 +73,12 @@ class MovableObject extends DrawableObject {
     if (!this.immune) {
       this.immune = true;
       this.energy -= 20;
-      this.bossAttackSound.pause();
-      this.bossAttackSound.currentTime = 0;
-      this.bossAttackSound.play();
+      //this.bossAttackSound.pause();
+      //this.bossAttackSound.currentTime = 0;
+      //this.bossAttackSound.play();
+      this.audio.bossAttackSound.pause();
+      this.audio.bossAttackSound.currentTime = 0;
+      this.audio.bossAttackSound.play();
       if (this.energy < 0) {
         this.energy = 0;
       } else {
@@ -105,13 +111,19 @@ class MovableObject extends DrawableObject {
       }
       this.checkEndbossEnergy();
       if (this.isAngry && this.energyEndboss <= 20) {
-        this.bossAngrySound.pause(); // Stop the sound if it's already playing
-        this.bossAngrySound.currentTime = 0; // Reset the sound to the beginning
-        this.bossAngrySound.play(); // Play the angry sound
+        //this.bossAngrySound.pause(); // Stop the sound if it's already playing
+        //this.bossAngrySound.currentTime = 0; // Reset the sound to the beginning
+        //this.bossAngrySound.play(); // Play the angry sound
+        this.audio.bossAngrySound.pause(); // Stop the sound if it's already playing
+        this.audio.bossAngrySound.currentTime = 0; // Reset the sound to the beginning
+        this.audio.bossAngrySound.play(); // Play the angry sound
       } else {
-        this.bossHitSound.pause(); // Stop the sound if it's already playing
-        this.bossHitSound.currentTime = 0; // Reset the sound to the beginning
-        this.bossHitSound.play(); // Play the hit sound
+        //this.bossHitSound.pause(); // Stop the sound if it's already playing
+        //this.bossHitSound.currentTime = 0; // Reset the sound to the beginning
+        //this.bossHitSound.play(); // Play the hit sound
+        this.audio.bossHitSound.pause(); // Stop the sound if it's already playing
+        this.audio.bossHitSound.currentTime = 0; // Reset the sound to the beginning
+        this.audio.bossHitSound.play(); // Play the hit sound
       }
     }
   }

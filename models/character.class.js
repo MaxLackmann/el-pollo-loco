@@ -10,10 +10,11 @@ class Character extends MovableObject {
     right: 20,
   };
 
-  walkingSound = new Audio('audio/character_walking.mp3');
-  sleepingSound = new Audio('audio/character_sleeping.mp3');
-  jumpingSound = new Audio('audio/character_jumping.mp3');
+  //walkingSound = new Audio('audio/character_walking.mp3');
+  //sleepingSound = new Audio('audio/character_sleeping.mp3');
+  //jumpingSound = new Audio('audio/character_jumping.mp3');
   lastMoveTime = Date.now();
+  isSleeping = false;
 
   IMAGES_WALKING = [
     'img/2_character_pepe/2_walk/W-21.png',
@@ -80,8 +81,9 @@ class Character extends MovableObject {
 
   world;
 
-  constructor() {
+  constructor(audio) {
     super().loadImage('img/2_character_pepe/2_walk/W-21.png');
+    this.audio = audio;
     this.loadImages(this.IMAGES_WALKING);
     this.loadImages(this.IMAGES_JUMPING);
     this.loadImages(this.IMAGES_DEAD);
@@ -94,7 +96,6 @@ class Character extends MovableObject {
 
   animate() {
     setInterval(() => {
-      //this.walkingSound.pause();
       let moved = false;
       if (
         (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) ||
@@ -103,7 +104,6 @@ class Character extends MovableObject {
         this.moveRight();
         this.otherDirection = false;
         moved = true;
-        //this.walkingSound.play();
       }
       if (
         (this.world.keyboard.LEFT && this.x > 0) ||
@@ -112,7 +112,6 @@ class Character extends MovableObject {
         this.moveLeft();
         this.otherDirection = true;
         moved = true;
-        //this.walkingSound.play();
       }
       if (
         (this.world.keyboard.SPACE && !this.isAboveGround()) ||
@@ -120,18 +119,22 @@ class Character extends MovableObject {
         (this.world.keyboard.W && !this.isAboveGround())
       ) {
         super.jump();
-        this.jumpingSound.play();
+        //this.jumpingSound.play();
+        this.audio.jumpingSound.play();
         moved = true;
       }
 
       if (moved) {
         this.lastMoveTime = Date.now(); // Update the last move time
+        this.isSleeping = false;
       }
 
       if (moved && !this.isAboveGround()) {
-        this.walkingSound.play();
+        //this.walkingSound.play();
+        this.audio.walkingSound.play();
       } else {
-        this.walkingSound.pause();
+        //this.walkingSound.pause();
+        this.audio.walkingSound.pause();
       }
 
       this.world.camera_x = -this.x + 100;
@@ -143,12 +146,22 @@ class Character extends MovableObject {
 
       if (this.isDead()) {
         this.playAnimation(this.IMAGES_DEAD);
+        //this.sleepingSound.pause();
+        this.audio.sleepingSound.pause();
       } else if (this.isHurt()) {
         this.playAnimation(this.IMAGES_HURT);
+        //this.sleepingSound.pause();
+        this.audio.sleepingSound.pause();
       } else if (this.isAboveGround()) {
         this.playAnimation(this.IMAGES_JUMPING);
-      } else if (timeSinceLastMove > 2000) {
-        this.sleepingSound.play();
+        //this.sleepingSound.pause();
+        this.audio.sleepingSound.pause();
+      } else if (timeSinceLastMove > 3000) {
+        if (!this.isSleeping) {
+          //this.sleepingSound.play();
+          this.audio.sleepingSound.play();
+          this.isSleeping = true;
+        }
         this.playAnimation(this.IMAGES_SLEEPING);
       } else {
         if (this.world.keyboard.LEFT || this.world.keyboard.RIGHT) {
