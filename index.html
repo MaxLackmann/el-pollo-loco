@@ -3,13 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>El-Pollo-Loco</title>
     <link rel="stylesheet" href="style.css" />
-    <link
-      rel="icon"
-      type="image/x-icon"
-      href="/img/9_intro_outro_screens/start/startscreen_2.png"
-    />
+    <link rel="icon" type="image/x-icon" href="./img/logo.png" />
     <script src="models/drawable-object.class.js"></script>
     <script src="models/movable-object.class.js"></script>
     <script src="models/character.class.js"></script>
@@ -24,6 +20,8 @@
     <script src="models/enemies/chicken.class.js"></script>
     <script src="models/enemies/endboss.class.js"></script>
     <script src="models/enemies/small-chicken.class.js"></script>
+    <script src="models/collision-object-handler.class.js"></script>
+    <script src="models/audio.class.js"></script>
     <script src="levels/level1.js"></script>
     <script src="js/game.js"></script>
   </head>
@@ -47,16 +45,22 @@
           </div>
         </div>
         <div class="instructions">
-          <h2>INSTRUCTIONS</h2>
-          <div class="move-left">Move Left: ← | A</div>
-          <div class="move-right">Move Right: D | →</div>
-          <div class="attack">
-            Attack: F | Shift
-            <img src="" alt="" />
+          <div class="instructions-text">
+            <h2>INSTRUCTIONS</h2>
+            <div class="move-left">Move Left : ← | A</div>
+            <div class="move-right">Move Right : D | →</div>
+            <div class="attack">
+              Attack : F | Shift
+              <img src="" alt="" />
+            </div>
+            <div class="jump">
+              Jump : W | ↑ | Space
+              <img src="" alt="" />
+            </div>
           </div>
-          <div class="jump">
-            Jump: W | ↑ | Space
-            <img src="" alt="" />
+          <div class="instructions-information">
+            <a href="./privacy_policy.html">Privacy-policy</a>
+            <a href="./legal_notice.html">Legal-notice</a>
           </div>
         </div>
       </div>
@@ -79,6 +83,40 @@
       </div>
       <div id="gameScreen" class="canvas-container d-none">
         <canvas id="canvas" width="720" height="480"></canvas>
+        <div id="mobileButtons" class="mobile-buttons d-none">
+          <div class="mobile-animation">
+            <div class="mobile-attack-button">
+              <img
+                id="mobileJump"
+                src="./img/2_character_pepe/3_jump/J-34.png"
+                alt=""
+              />
+            </div>
+            <div class="mobile-attack-button">
+              <img
+                id="mobileThrow"
+                src="./img/6_salsa_bottle/2_salsa_bottle_on_ground.png"
+                alt=""
+              />
+            </div>
+          </div>
+          <div class="move-mobile">
+            <div class="mobile-move-button">
+              <img
+                id="mobileLeft"
+                src="./img/instruction/mobile-left.svg"
+                alt=""
+              />
+            </div>
+            <div class="mobile-move-button">
+              <img
+                id="mobileRight"
+                src="./img/instruction/mobile-right.svg"
+                alt=""
+              />
+            </div>
+          </div>
+        </div>
       </div>
       <div id="loseGameScreen" class="losescreen-container d-none">
         <div class="lose-buttons">
@@ -113,36 +151,6 @@
           src="./img/9_intro_outro_screens/win/win_1.png"
           alt=""
         />
-      </div>
-      <div id="mobileButtons" class="mobile-buttons d-none">
-        <div class="mobile-animation">
-          <img
-            class="mobile-attack-button"
-            id="mobileJump"
-            src="./img/2_character_pepe/3_jump/J-34.png"
-            alt=""
-          />
-          <img
-            class="mobile-attack-button"
-            id="mobileThrow"
-            src="./img/6_salsa_bottle/2_salsa_bottle_on_ground.png"
-            alt=""
-          />
-        </div>
-        <div class="move-mobile">
-          <img
-            class="mobile-move-button"
-            id="mobileLeft"
-            src="./img/instruction/mobile-left.svg"
-            alt=""
-          />
-          <img
-            class="mobile-move-button"
-            id="mobileRight"
-            src="./img/instruction/mobile-right.svg"
-            alt=""
-          />
-        </div>
       </div>
     </section>
   </body>

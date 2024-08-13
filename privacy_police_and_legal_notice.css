@@ -1,0 +1,42 @@
+body {
+  background-image: url(./img/desert.png);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  backdrop-filter: brightness(0.6);
+  min-height: 100vh;
+  margin: 0;
+  font-family: 'Zabars', Arial, Helvetica, sans-serif;
+}
+
+h1 {
+  font-size: 100px;
+  margin: 0;
+  text-align: center;
+  padding: 40px 0;
+  color: #ffffff;
+
+  text-shadow: 0 1px #f68f00, -1px 0 #b17a02, -1px 2px #9d700f, -2px 1px #f99f03,
+    -2px 3px #f68f00, -3px 2px #b17a02, -3px 4px #9d700f, -4px 3px #f99f03,
+    -4px 5px #f68f00, -5px 4px #b17a02, -5px 6px #9d700f, -6px 5px #f99f03,
+    -6px 7px #f68f00, -7px 6px #b17a02, -7px 8px #9d700f, -8px 7px #f99f03;
+}
+
+.text {
+  text-align: center;
+  font-size: 20px;
+  color: #ffffff;
+  margin: 0;
+  padding: 40px 16px;
+}
+
+.back {
+  text-decoration: none;
+}
+
+.back-arrow {
+  font-size: 56px;
+  color: #ffffff;
+  margin: 0;
+  padding: 0 40px;
+}

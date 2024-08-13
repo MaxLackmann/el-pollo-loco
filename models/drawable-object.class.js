@@ -8,18 +8,32 @@ class DrawableObject {
   width = 100;
   visible = true;
 
-  // loadImage('img/test.png')
+  /**
+   * Loads an image from a specified path and assigns it to the object's img property.
+   * @param {string} path - The path to the image file.
+   * @return {void} This function does not return a value.
+   */
   loadImage(path) {
     this.img = new Image();
     this.img.src = path;
   }
 
+  /**
+   * Draws the image on the canvas context.
+   * @param {CanvasRenderingContext2D} ctx - The canvas rendering context.
+   * @return {void} This function does not return a value.
+   */
   draw(ctx) {
     if (this.visible) {
       ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
     }
   }
 
+  /**
+   * A description of the entire function.
+   * @param {type} paramName - description of parameter
+   * @return {type} description of return value
+   */
   loadImages(array) {
     array.forEach((path) => {
       let img = new Image();
@@ -39,46 +53,15 @@ class DrawableObject {
       this instanceof ThrowableObject
     ) {
       ctx.beginPath();
-      ctx.lineWidth = '3';
-      ctx.strokeStyle = 'blue';
-      ctx.rect(
-        this.x + this.offset.left,
-        this.y + this.offset.top,
-        this.width - this.offset.right - this.offset.left,
-        this.height - this.offset.bottom - this.offset.top
-      );
+      //ctx.lineWidth = '3';
+      //ctx.strokeStyle = 'blue';
+      //ctx.rect(
+      //  this.x + this.offset.left,
+      //  this.y + this.offset.top,
+      //  this.width - this.offset.right - this.offset.left,
+      //  this.height - this.offset.bottom - this.offset.top
+      //);
       ctx.stroke();
     }
   }
 }
-
-// 1. Methode
-/* Alternative (quick and dirty), um alle Intervalle zu beenden. */
-//clearAllIntervals() {
-//  for (let i = 1; i < 9999; i++) window.clearInterval(i);
-//}
-
-// 2. Methode
-//let intervallIds = [];
-//let i = 1;
-//function setStoppableInterval(fn, time) {
-//  let id = setInterval(fn, time);
-//  intervallIds.push(id);
-//}
-//
-//setStoppableInterval(sayHello, 500);
-//setStoppableInterval(sayGoodbye, 500);
-//
-//function stopGame() {
-//  intervallIds.forEach(clearInterval);
-//}
-//
-//function sayHello() {
-//  console.log('Hello', i);
-//  i++;
-//}
-//
-//function sayGoodbye() {
-//  console.log('Goodbye', i);
-//  i++;
-//}

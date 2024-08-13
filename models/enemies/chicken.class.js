@@ -5,11 +5,10 @@ class Chicken extends MovableObject {
   isDead = false;
   offset = {
     top: 0,
-    bottom: 0,
+    bottom: 5,
     left: 0,
     right: 0,
   };
-  //chickenWalkingSound = new Audio('audio/chicken_walking.mp3');
 
   IMAGES_WALKING = [
     'img/3_enemies_chicken/chicken_normal/1_walk/1_w.png',
@@ -19,9 +18,14 @@ class Chicken extends MovableObject {
 
   IMAGES_DEAD = ['img/3_enemies_chicken/chicken_normal/2_dead/dead.png'];
 
-  constructor(audio) {
+  /**
+   * Constructor function for initializing a Chicken object.
+   * @param {audio} audio - The audio manager for the Chicken object.
+   * @return {void} This function does not return a value.
+   */
+  constructor(soundmanager) {
     super().loadImage('img/3_enemies_chicken/chicken_normal/1_walk/1_w.png');
-    this.audio = audio;
+    this.soundmanager = soundmanager;
     this.loadImages(this.IMAGES_WALKING);
     this.loadImages(this.IMAGES_DEAD);
     this.randomPositioning();
@@ -29,28 +33,63 @@ class Chicken extends MovableObject {
     this.animate();
   }
 
+  /**
+   * Randomly positions the object along the x-axis.
+   * @return {void}
+   */
   randomPositioning() {
     this.x = 500 + Math.random() * 1800;
   }
 
+  /**
+   * Randomly sets the speed of the object within a range from 0.15 to 0.65.
+   * @return {void} This function does not return a value.
+   */
   randomSpeed() {
     this.speed = 0.15 + Math.random() * 0.5;
   }
 
+  /**
+   * Animates the object by starting the movement and walking animations.
+   * @return {void} This function does not return anything.
+   */
   animate() {
+    this.startMovementAnimation();
+    this.startWalkingAnimation();
+  }
+
+  /**
+   * Starts the movement animation by moving the object to the left and playing the walking sound.
+   * @return {void} This function does not return a value.
+   */
+  startMovementAnimation() {
     setInterval(() => {
       this.moveLeft();
-      //this.chickenWalkingSound.play();
-      //this.chickenWalkingSound.volume = 0.1;
-      this.audio.chickenWalkingSound.play();
-      this.audio.chickenWalkingSound.volume = 0.1;
+      this.playWalkingSound();
     }, 1000 / 60);
+  }
 
+  /**
+   * Plays the walking sound if the sound manager is not muted.
+   * @return {void} This function does not return a value.
+   */
+  playWalkingSound() {
+    if (!this.soundmanager.isMuted) {
+      this.soundmanager.chickenWalkingSound.play();
+      this.soundmanager.chickenWalkingSound.volume = 0.1;
+    }
+  }
+
+  /**
+   * Starts the walking animation by repeatedly playing the appropriate animation
+   * based on the object's state. The animation is played at a rate of 100ms.
+   * @return {void} This function does not return a value.
+   */
+  startWalkingAnimation() {
     setInterval(() => {
-      if (this.isDead === false) {
+      if (!this.isDead) {
         this.playAnimation(this.IMAGES_WALKING);
-      }
-      if (this.isDead === true) {
+      } else {
         this.playAnimation(this.IMAGES_DEAD);
       }
     }, 100);

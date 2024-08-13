@@ -1,18 +1,14 @@
 class Character extends MovableObject {
   height = 250;
   width = 150;
-  y = 180;
+  y = 185;
   speed = 10;
   offset = {
     top: 95,
     bottom: 10,
     left: 20,
-    right: 20,
+    right: 30,
   };
-
-  //walkingSound = new Audio('audio/character_walking.mp3');
-  //sleepingSound = new Audio('audio/character_sleeping.mp3');
-  //jumpingSound = new Audio('audio/character_jumping.mp3');
   lastMoveTime = Date.now();
   isSleeping = false;
 
@@ -81,9 +77,14 @@ class Character extends MovableObject {
 
   world;
 
+  /**
+   * Initializes a new instance of the class.
+   * @param {Object} audio - The audio object.
+   * @return {void}
+   */
   constructor(audio) {
     super().loadImage('img/2_character_pepe/2_walk/W-21.png');
-    this.audio = audio;
+    this.soundmanager = audio;
     this.loadImages(this.IMAGES_WALKING);
     this.loadImages(this.IMAGES_JUMPING);
     this.loadImages(this.IMAGES_DEAD);
@@ -94,82 +95,163 @@ class Character extends MovableObject {
     this.animate();
   }
 
+  /**
+   * Animates the object by starting the movement and animation.
+   * @return {void} This function does not return a value.
+   */
   animate() {
-    setInterval(() => {
-      let moved = false;
-      if (
-        (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) ||
-        (this.world.keyboard.D && this.x < this.world.level.level_end_x)
-      ) {
-        this.moveRight();
-        this.otherDirection = false;
-        moved = true;
-      }
-      if (
-        (this.world.keyboard.LEFT && this.x > 0) ||
-        (this.world.keyboard.A && this.x > 0)
-      ) {
-        this.moveLeft();
-        this.otherDirection = true;
-        moved = true;
-      }
-      if (
-        (this.world.keyboard.SPACE && !this.isAboveGround()) ||
-        (this.world.keyboard.UP && !this.isAboveGround()) ||
-        (this.world.keyboard.W && !this.isAboveGround())
-      ) {
-        super.jump();
-        //this.jumpingSound.play();
-        this.audio.jumpingSound.play();
-        moved = true;
-      }
+    this.startMovement();
+    this.startAnimation();
+  }
 
+  /**
+   * Starts the movement of the object.
+   * @return {void}
+   */
+  startMovement() {
+    setInterval(() => {
+      let moved = this.handleMovement();
       if (moved) {
         this.lastMoveTime = Date.now(); // Update the last move time
         this.isSleeping = false;
       }
-
-      if (moved && !this.isAboveGround()) {
-        //this.walkingSound.play();
-        this.audio.walkingSound.play();
-      } else {
-        //this.walkingSound.pause();
-        this.audio.walkingSound.pause();
-      }
-
+      this.handleWalkingSound(moved);
       this.world.camera_x = -this.x + 100;
     }, 1000 / 60);
+  }
 
-    setInterval(() => {
-      const currentTime = Date.now();
-      const timeSinceLastMove = currentTime - this.lastMoveTime;
+  /**
+   * Handles the movement of the object based on the current keyboard input.
+   * @return {boolean} Returns true if the object has moved, false otherwise.
+   */
+  handleMovement() {
+    let moved = false;
+    if (
+      (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) ||
+      (this.world.keyboard.D && this.x < this.world.level.level_end_x)
+    ) {
+      this.moveRight();
+      this.otherDirection = false;
+      moved = true;
+    }
+    if (
+      (this.world.keyboard.LEFT && this.x > 0) ||
+      (this.world.keyboard.A && this.x > 0)
+    ) {
+      this.moveLeft();
+      this.otherDirection = true;
+      moved = true;
+    }
+    if (
+      (this.world.keyboard.SPACE && !this.isAboveGround()) ||
+      (this.world.keyboard.UP && !this.isAboveGround()) ||
+      (this.world.keyboard.W && !this.isAboveGround())
+    ) {
+      super.jump();
+      this.playJumpingSound();
+      moved = true;
+    }
+    return moved;
+  }
 
-      if (this.isDead()) {
-        this.playAnimation(this.IMAGES_DEAD);
-        //this.sleepingSound.pause();
-        this.audio.sleepingSound.pause();
-      } else if (this.isHurt()) {
-        this.playAnimation(this.IMAGES_HURT);
-        //this.sleepingSound.pause();
-        this.audio.sleepingSound.pause();
-      } else if (this.isAboveGround()) {
-        this.playAnimation(this.IMAGES_JUMPING);
-        //this.sleepingSound.pause();
-        this.audio.sleepingSound.pause();
-      } else if (timeSinceLastMove > 3000) {
-        if (!this.isSleeping) {
-          //this.sleepingSound.play();
-          this.audio.sleepingSound.play();
-          this.isSleeping = true;
-        }
-        this.playAnimation(this.IMAGES_SLEEPING);
-      } else {
-        if (this.world.keyboard.LEFT || this.world.keyboard.RIGHT) {
-          this.playAnimation(this.IMAGES_WALKING);
-        } else {
-          this.playAnimation(this.IMAGES_IDLE);
-        }
+  /**
+   * Plays the jumping sound if the sound manager is not muted.
+   * @return {void} This function does not return anything.
+   */
+  playJumpingSound() {
+    if (!this.soundmanager.isMuted) {
+      this.soundmanager.jumpingSound.play();
+    }
+  }
+
+  /**
+   * Handles the walking sound based on whether the character has moved and is above ground.
+   * @param {boolean} moved - Indicates whether the character has moved.
+   * @return {void} This function does not return a value.
+   */
+  handleWalkingSound(moved) {
+    if (moved && !this.isAboveGround()) {
+      if (!this.soundmanager.isMuted) {
+        this.soundmanager.walkingSound.play();
       }
+    } else {
+      if (!this.soundmanager.isMuted) {
+        this.soundmanager.walkingSound.pause();
+      }
+    }
+  }
+
+  /**
+   * Starts an animation by calling the `updateAnimation` method every 100 milliseconds.
+   * @return {void} This function does not return a value.
+   */
+  startAnimation() {
+    setInterval(() => {
+      this.updateAnimation();
     }, 1000 / 10);
+  }
+
+  /**
+   * Updates the animation based on the character's state.
+   * This function checks the character's state and plays the appropriate animation.
+   * If the character is dead, it plays the DEAD animation and pauses the sleeping sound.
+   * If the character is hurt, it plays the HURT animation and pauses the sleeping sound.
+   * If the character is above ground, it plays the JUMPING animation and pauses the sleeping sound.
+   * If the character has been inactive for more than 3 seconds, it plays the SLEEPING animation and starts the sleeping sound if it hasn't started already.
+   * If none of the above conditions are met, it plays the default animation based on keyboard input.
+   * @return {void} This function does not return a value.
+   */
+  updateAnimation() {
+    const currentTime = Date.now();
+    const timeSinceLastMove = currentTime - this.lastMoveTime;
+    if (this.isDead()) {
+      this.playAnimation(this.IMAGES_DEAD);
+      this.pauseSleepingSound();
+    } else if (this.isHurt()) {
+      this.playAnimation(this.IMAGES_HURT);
+      this.pauseSleepingSound();
+    } else if (this.isAboveGround()) {
+      this.playAnimation(this.IMAGES_JUMPING);
+      this.pauseSleepingSound();
+    } else if (timeSinceLastMove > 3000) {
+      if (!this.isSleeping) {
+        this.playSleepingSound();
+        this.isSleeping = true;
+      }
+      this.playAnimation(this.IMAGES_SLEEPING);
+    } else {
+      this.playDefaultAnimation();
+    }
+  }
+
+  /**
+   * Pauses the sleeping sound if the sound manager is not muted.
+   * @return {void} This function does not return a value.
+   */
+  pauseSleepingSound() {
+    if (!this.soundmanager.isMuted) {
+      this.soundmanager.sleepingSound.pause();
+    }
+  }
+
+  /**
+   * Plays the sleeping sound if the sound manager is not muted.
+   * @return {void} This function does not return a value.
+   */
+  playSleepingSound() {
+    if (!this.soundmanager.isMuted) {
+      this.soundmanager.sleepingSound.play();
+    }
+  }
+
+  /**
+   * Plays the default animation based on keyboard input.
+   */
+  playDefaultAnimation() {
+    if (this.world.keyboard.LEFT || this.world.keyboard.RIGHT) {
+      this.playAnimation(this.IMAGES_WALKING);
+    } else {
+      this.playAnimation(this.IMAGES_IDLE);
+    }
   }
 }

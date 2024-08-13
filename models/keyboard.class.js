@@ -11,6 +11,10 @@ class Keyboard {
   D = false;
   F = false;
 
+  /**
+   * Initializes a new instance of the Keyboard class.
+   * @return {undefined} No return value.
+   */
   constructor() {
     document.addEventListener('DOMContentLoaded', () => {
       this.bindKeyPressEvents();
@@ -18,6 +22,11 @@ class Keyboard {
     });
   }
 
+  /**
+   * Binds key press events to set keyboard properties based on the key codes.
+   * @param {type} paramName - description of parameter
+   * @return {type} description of return value
+   */
   bindKeyPressEvents() {
     window.addEventListener('keydown', (e) => {
       if (e.keyCode == 39) {
@@ -92,6 +101,11 @@ class Keyboard {
     });
   }
 
+  /**
+   * Binds event listeners to mobile buttons for touchstart and touchend events.
+   * Sets the corresponding keyboard properties to true on touchstart and false on touchend.
+   * @return {undefined} No return value.
+   */
   bindButtonsPressEvents() {
     document
       .getElementById('mobileLeft')

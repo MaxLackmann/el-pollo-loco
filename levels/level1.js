@@ -1,23 +1,36 @@
 let level1;
+
+/**
+ * Initializes a new Level object with the specified enemies, clouds, background objects, coins, and bottles.
+ * @return {void} This function does not return a value.
+ */
 function initLevel() {
+  const numClouds = 6;
+  const totalWidth = 2400;
+  const segmentWidth = totalWidth / numClouds;
   level1 = new Level(
     [
-      new Chicken(),
-      new Chicken(),
-      new Chicken(),
-      new SmallChicken(),
-      new SmallChicken(),
-      new SmallChicken(),
-      new SmallChicken(),
-      new SmallChicken(),
+      new Chicken(soundmanager),
+      new Chicken(soundmanager),
+      new Chicken(soundmanager),
+      new SmallChicken(soundmanager),
+      new SmallChicken(soundmanager),
+      new SmallChicken(soundmanager),
+      new SmallChicken(soundmanager),
+      new SmallChicken(soundmanager),
     ],
 
-    [new Endboss()],
-
-    [new Cloud()],
+    [new Endboss(soundmanager)],
 
     [
-      // alles nachher mit einer forschleife itterrieren
+      new Cloud(0 * segmentWidth, 1 * segmentWidth),
+      new Cloud(1 * segmentWidth, 2 * segmentWidth),
+      new Cloud(2 * segmentWidth, 3 * segmentWidth),
+      new Cloud(3 * segmentWidth, 4 * segmentWidth),
+      new Cloud(4 * segmentWidth, 5 * segmentWidth),
+      new Cloud(5 * segmentWidth, 6 * segmentWidth),
+    ],
+    [
       new BackgroundObject('img/5_background/layers/air.png', -719),
       new BackgroundObject('img/5_background/layers/3_third_layer/2.png', -719),
       new BackgroundObject(
@@ -74,29 +87,29 @@ function initLevel() {
       ),
     ],
     [
-      new Coin(),
-      new Coin(),
-      new Coin(),
-      new Coin(),
-      new Coin(),
-      new Coin(),
-      new Coin(),
-      new Coin(),
-      new Coin(),
-      new Coin(),
+      new Coin(soundmanager),
+      new Coin(soundmanager),
+      new Coin(soundmanager),
+      new Coin(soundmanager),
+      new Coin(soundmanager),
+      new Coin(soundmanager),
+      new Coin(soundmanager),
+      new Coin(soundmanager),
+      new Coin(soundmanager),
+      new Coin(soundmanager),
     ],
 
     [
-      new Bottle(),
-      new Bottle(),
-      new Bottle(),
-      new Bottle(),
-      new Bottle(),
-      new Bottle(),
-      new Bottle(),
-      new Bottle(),
-      new Bottle(),
-      new Bottle(),
+      new Bottle(soundmanager),
+      new Bottle(soundmanager),
+      new Bottle(soundmanager),
+      new Bottle(soundmanager),
+      new Bottle(soundmanager),
+      new Bottle(soundmanager),
+      new Bottle(soundmanager),
+      new Bottle(soundmanager),
+      new Bottle(soundmanager),
+      new Bottle(soundmanager),
     ]
   );
 }

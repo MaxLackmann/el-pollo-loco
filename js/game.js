@@ -1,85 +1,122 @@
 let canvas;
 let world;
 let keyboard = new Keyboard();
-let audio = new Audio();
-let isMuted = true;
-//let backgroundSound = new Audio('audio/background.mp3');
-//let startGameSound = new Audio('audio/start_char.mp3');
-audio.backgroundSound.loop = true;
+let soundmanager = new Soundmanager();
 
-let sounds = [backgroundSound, startGameSound];
-let soundPositions = { backgroundSound: 0, startGameSound: 0 };
-let startGameSoundPlayed = false;
-
+/**
+ * Initializes the game by setting up the canvas and world objects.
+ * @return {void} This function does not return a value.
+ */
 function init() {
   canvas = document.getElementById('canvas');
-  world = new World(canvas, keyboard);
+  world = new World(canvas, keyboard, soundmanager);
 }
 
-function toggleMute() {
-  isMuted = !isMuted;
-  sounds.forEach((sound) => {
-    if (isMuted) {
-      // Speichern der aktuellen Zeit, falls sie gültig ist
-      soundPositions[sound.src] = sound.currentTime || 0; // Wenn sound.currentTime ungültig ist, wird 0 verwendet
-      if (sound === audio.startGameSound) {
-        sound.volume = 0; // Lautstärke auf 0 setzen, um den Ton auszuschalten
-      } else {
-        sound.pause(); // Pausiere andere Sounds
-      }
-    } else {
-      // Wiederherstellen der gespeicherten Zeit, falls sie gültig ist
-      sound.currentTime = soundPositions[sound.src] || 0; // Wenn soundPositions[sound.src] ungültig ist, wird 0 verwendet
-      if (sound === audio.startGameSound) {
-        sound.volume = 1; // Lautstärke auf 1 setzen, um den Ton einzuschalten
-      } else {
-        sound.play(); // Spiele andere Sounds ab
-      }
-    }
-  });
+document.addEventListener('DOMContentLoaded', (event) => {
+  if (!soundmanager) {
+    soundmanager = new Soundmanager();
+  }
+  playBackgroundSound();
+});
 
-  const muteIcon = document.getElementById('muteIcon');
-  if (isMuted) {
-    muteIcon.src = './img/instruction/sound_off.svg';
-  } else {
-    muteIcon.src = './img/instruction/sound_on.svg';
+/**
+ * Toggles the mute state of the sound manager and plays the background sound if it's not muted.
+ * @return {void} This function does not return a value.
+ */
+function toggleMute() {
+  if (soundmanager) {
+    soundmanager.toggleMute();
+    if (!soundmanager.isMuted) {
+      playBackgroundSound();
+    }
   }
 }
 
+/**
+ * Starts the game by closing the start screen, displaying the loading screen, initializing the level, and initializing the game.
+ * @return {void} This function does not return a value.
+ */
 function startGame() {
   closeStartScreen();
   loadingScreen();
   initLevel();
   init();
-  if (!isMuted && backgroundSound.paused) {
-    //audio.backgroundSound
-    backgroundSound.play(); //audio.backgroundSound
-  }
 }
 
+/**
+ * Displays the loading screen for a short duration before transitioning to the game interface.
+ * @return {void}
+ */
 function loadingScreen() {
-  document.getElementById('loadingScreen').classList.remove('d-none');
+  showLoadingScreen();
   setTimeout(() => {
-    if (!isMuted) {
-      //startGameSound.play();
-      audio.startGameSound.play();
-    }
-    document.getElementById('loadingScreen').classList.add('d-none');
-    document.getElementById('mobileButtons').classList.remove('d-none');
-    document.getElementById('fullscreenButton').classList.remove('d-none');
+    playStartSounds();
+    hideLoadingScreen();
+    showGameButtons();
   }, 700);
 }
 
+/**
+ * Displays the loading screen by removing the 'd-none' class from the 'loadingScreen' element.
+ * @return {void} This function does not return a value.
+ */
+function showLoadingScreen() {
+  document.getElementById('loadingScreen').classList.remove('d-none');
+}
+
+/**
+ * Hides the loading screen by adding the 'd-none' class to the 'loadingScreen' element.
+ * @return {void} This function does not return a value.
+ */
+function hideLoadingScreen() {
+  document.getElementById('loadingScreen').classList.add('d-none');
+}
+
+/**
+ * Plays the start game sound and background sound if the sound manager is not muted.
+ * @return {void} This function does not return a value.
+ */
+function playStartSounds() {
+  if (!soundmanager.isMuted) {
+    soundmanager.startGameSound.play();
+    if (soundmanager.backgroundSound.paused) {
+      soundmanager.backgroundSound.play();
+    }
+  }
+}
+
+/**
+ * Displays the game buttons by removing the 'd-none' class from the 'mobileButtons' and 'fullscreenButton' elements.
+ * @return {void} This function does not return a value.
+ */
+function showGameButtons() {
+  document.getElementById('mobileButtons').classList.remove('d-none');
+  document.getElementById('fullscreenButton').classList.remove('d-none');
+}
+
+/**
+ * Closes the start game screen and displays the game screen.
+ * @return {void} This function does not return a value.
+ */
 function closeStartScreen() {
   document.getElementById('startGameScreen').classList.add('d-none');
   document.getElementById('gameScreen').classList.remove('d-none');
 }
 
+/**
+ * Enters full screen mode for the canvas element.
+ * @return {void} This function does not return a value.
+ */
 function fullscreen() {
   let canvas = document.getElementById('canvas');
-  enterScreen(canvas);
+  enterFullScreen(canvas);
 }
 
+/**
+ * Enters full screen mode for the given element if supported by the browser.
+ * @param {HTMLElement} element - The element to enter full screen mode for.
+ * @return {void} This function does not return a value.
+ */
 function enterFullScreen(element) {
   if (element.requestFullscreen) {
     element.requestFullscreen();
@@ -92,6 +129,10 @@ function enterFullScreen(element) {
   }
 }
 
+/**
+ * Exits full screen mode if it is currently active.
+ * @return {void} This function does not return a value.
+ */
 function exitFullScreen() {
   if (
     document.fullscreenElement ||
@@ -111,69 +152,245 @@ function exitFullScreen() {
   }
 }
 
-function winGame() {
+/**
+ * Executes the win game logic by showing the win screen, hiding game buttons,
+ * stopping the game, exiting fullscreen mode, hiding the fullscreen button,
+ * and stopping the background sound.
+ * @return {void} This function does not return a value.
+ */
+function winGameScreen() {
+  showWinScreen();
+  hideGameButtons();
+  stopGame();
+  exitFullScreen();
+  hideFullScreenButton();
+  stopBackgroundSound();
+}
+
+/**
+ * Shows the win game screen by removing the 'd-none' class from the element with the id 'winGameScreen'.
+ * @return {void} This function does not return a value.
+ */
+function showWinScreen() {
   document.getElementById('winGameScreen').classList.remove('d-none');
-  document.getElementById('mobileButtons').classList.add('d-none');
-  stopGame();
-  exitFullScreen();
-  //backgroundSound.pause(); // Stop the when returning to the menu
-  //backgroundSound.currentTime = 0; // Reset the sound
-  audio.backgroundSound.pause(); // Stop the when returning to the menu
-  audio.backgroundSound.currentTime = 0; // Reset the sound
 }
 
-function loseGame() {
+/**
+ * Hides the game buttons by adding the 'd-none' class to the element with the id 'mobileButtons'.
+ * @return {void}
+ */
+function hideGameButtons() {
+  document.getElementById('mobileButtons').classList.add('d-none');
+}
+
+/**
+ * Executes the lose game logic by showing the lose screen, hiding game buttons,
+ * stopping the game, exiting fullscreen mode, hiding the fullscreen button,
+ * and stopping the background sound.
+ * @return {void} This function does not return a value.
+ */
+function loseGameScreen() {
+  showLoseScreen();
+  hideGameButtons();
+  stopGame();
+  exitFullScreen();
+  hideFullScreenButton();
+  stopBackgroundSound();
+}
+
+/**
+ * Displays the "lose game" screen by removing the 'd-none' class from the
+ * HTML element with the ID 'loseGameScreen'.
+ * @return {void} This function does not return anything.
+ */
+function showLoseScreen() {
   document.getElementById('loseGameScreen').classList.remove('d-none');
-  document.getElementById('mobileButtons').classList.add('d-none');
-  stopGame();
-  exitFullScreen();
-  //backgroundSound.pause(); // Stop the when returning to the menu
-  //backgroundSound.currentTime = 0; // Reset the sound
-  audio.backgroundSound.pause(); // Stop the when returning to the menu
-  audio.backgroundSound.currentTime = 0; // Reset the sound
 }
 
+/**
+ * Stops all intervals by clearing them one by one.
+ * @return {void} This function does not return a value.
+ */
 function stopGame() {
   for (let i = 1; i < 9999; i++) {
     window.clearInterval(i);
   }
 }
 
+/**
+ * Restarts the game by hiding the end screens, resetting the audio, playing the background sound, and starting the game.
+ * @return {void} This function does not return a value.
+ */
 function restartGame() {
-  document.getElementById('loseGameScreen').classList.add('d-none');
-  document.getElementById('winGameScreen').classList.add('d-none');
-  //loseSound.pause();
-  //loseSound.currentTime = 0;
-  //winSound.pause();
-  //winSound.currentTime = 0;
-  //winSound2.pause();
-  //winSound2.currentTime = 0;
-  audio.loseSound.pause();
-  audio.loseSound.currentTime = 0;
-  audio.winSound.pause();
-  audio.winSound.currentTime = 0;
-  audio.winSound2.pause();
-  audio.winSound2.currentTime = 0;
-
+  hideEndScreens();
+  resetAudio();
+  playBackgroundSound();
   startGame();
 }
 
-function backToMenu() {
+/**
+ * Hides the game end screens by adding the 'd-none' class to the HTML elements with the IDs 'loseGameScreen' and 'winGameScreen'.
+ * @return {void} This function does not return a value.
+ */
+function hideEndScreens() {
   document.getElementById('loseGameScreen').classList.add('d-none');
   document.getElementById('winGameScreen').classList.add('d-none');
-  document.getElementById('gameScreen').classList.add('d-none');
-  document.getElementById('fullscreenButton').classList.add('d-none');
+}
+
+/**
+ * Restarts the game by hiding the end screens, showing the start game screen,
+ * hiding the game screen, hiding the full screen button, resetting the audio,
+ * and playing the background sound.
+ * @return {void} This function does not return a value.
+ */
+function backToMenu() {
+  hideEndScreens();
+  showStartGameScreen();
+  hideGameScreen();
+  hideFullScreenButton();
+  resetAudio();
+  playBackgroundSound();
+}
+
+/**
+ * Displays the start game screen by removing the 'd-none' class from the HTML element with the ID 'startGameScreen'.
+ * @return {void} This function does not return a value.
+ */
+function showStartGameScreen() {
   document.getElementById('startGameScreen').classList.remove('d-none');
-  //loseSound.pause();
-  //loseSound.currentTime = 0;
-  //winSound.pause();
-  //winSound.currentTime = 0;
-  //winSound2.pause();
-  //winSound2.currentTime = 0;
-  audio.loseSound.pause();
-  audio.loseSound.currentTime = 0;
-  audio.winSound.pause();
-  audio.winSound.currentTime = 0;
-  audio.winSound2.pause();
-  audio.winSound2.currentTime = 0;
+}
+
+/**
+ * Hides the game screen by adding the 'd-none' class to the HTML element with the ID 'gameScreen'.
+ * @return {void} This function does not return a value.
+ */
+function hideGameScreen() {
+  document.getElementById('gameScreen').classList.add('d-none');
+}
+
+/**
+ * Hides the fullscreen button by adding the 'd-none' class to the element with the ID 'fullscreenButton'.
+ * @return {void} This function does not return a value.
+ */
+function hideFullScreenButton() {
+  document.getElementById('fullscreenButton').classList.add('d-none');
+}
+
+/**
+ * Stops the background sound by pausing it and resetting its current time to 0.
+ * @return {void} This function does not return a value.
+ */
+function stopBackgroundSound() {
+  if (soundmanager && soundmanager.backgroundSound) {
+    soundmanager.backgroundSound.pause();
+    soundmanager.backgroundSound.currentTime = 0;
+  }
+}
+
+/**
+ * Resets the audio by pausing and rewinding all sounds managed by the soundmanager.
+ * @return {void} This function does not return a value.
+ */
+function resetAudio() {
+  if (soundmanager) {
+    const sounds = [
+      soundmanager.loseSound,
+      soundmanager.winSound,
+      soundmanager.winSound2,
+    ];
+
+    sounds.forEach((sound) => {
+      if (sound) {
+        sound.pause();
+        sound.currentTime = 0;
+      }
+    });
+  }
+}
+
+/**
+ * Plays the background sound if it's not muted, otherwise pauses it and resets its current time to 0.
+ * @return {void} This function does not return a value.
+ */
+function playBackgroundSound() {
+  if (soundmanager) {
+    if (!soundmanager.isMuted) {
+      if (soundmanager.backgroundSound.paused) {
+        soundmanager.backgroundSound.play();
+      }
+    } else {
+      soundmanager.backgroundSound.pause();
+      soundmanager.backgroundSound.currentTime = 0;
+    }
+  }
+}
+
+/**
+ * Checks if the game is over by verifying the character's energy and the endboss's energy.
+ * @param {Object} world - The game world object containing character and endboss data.
+ * @return {void}
+ */
+function checkGameOver(world) {
+  checkCharacterEnergy(world);
+  checkEndbossEnergy(world);
+}
+
+/**
+ * Checks if the character's energy has reached zero and triggers a game loss if so.
+ * @return {void}
+ */
+function checkCharacterEnergy() {
+  if (world.character.energy <= 0) {
+    this.loseGame();
+  }
+}
+
+/**
+ * Checks if the endboss's energy has reached zero and triggers a game win if true.
+ * @return {void} No return value, triggers winGame function if condition is met
+ */
+function checkEndbossEnergy() {
+  world.level.endboss.forEach((endboss) => {
+    if (endboss.energyEndboss <= 0) {
+      this.winGame();
+    }
+  });
+}
+
+/**
+ * Executes the game over logic by showing the game over screen, playing the lose sound, and pausing the walking sound.
+ * @return {void} This function does not return a value.
+ */
+function loseGame() {
+  setTimeout(() => {
+    loseGameScreen();
+    this.playSound(soundmanager.loseSound);
+    soundmanager.walkingSound.pause();
+  }, 300);
+}
+
+/**
+ * Executes the game win logic by showing the win game screen, playing the win sound, and pausing the walking sound.
+ * @return {void} This function does not return a value.
+ */
+function winGame() {
+  setTimeout(() => {
+    winGameScreen();
+    this.playSound(soundmanager.winSound);
+    this.playSound(soundmanager.winSound2);
+    soundmanager.walkingSound.pause();
+  }, 300);
+}
+
+/**
+ * Plays a sound if it is not muted.
+ * @param {Object} soundName - The sound object to be played.
+ * @return {void} This function does not return a value.
+ */
+function playSound(soundName) {
+  if (!soundmanager.isMuted) {
+    soundName.pause();
+    soundName.currentTime = 0;
+    soundName.play();
+  }
 }

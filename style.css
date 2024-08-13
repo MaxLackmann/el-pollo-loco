@@ -14,7 +14,7 @@ h1 {
   margin: 0;
   text-align: center;
   padding: 40px 0;
-  color: black;
+  color: white;
 
   text-shadow: 0 1px #f68f00, -1px 0 #b17a02, -1px 2px #9d700f, -2px 1px #f99f03,
     -2px 3px #f68f00, -3px 2px #b17a02, -3px 4px #9d700f, -4px 3px #f99f03,
@@ -28,7 +28,6 @@ h1 {
   height: 480px;
   margin: auto;
   border-radius: 20px;
-  box-shadow: 0px 0px 9px 10px rgba(0, 0, 0, 0.75);
 }
 
 .startscreen-container {
@@ -37,6 +36,7 @@ h1 {
   position: relative;
   z-index: 5;
   border-radius: 20px;
+  box-shadow: 0px 0px 15px 10px white;
 }
 
 .startscreen-button {
@@ -72,37 +72,63 @@ h1 {
 .start-button h4 {
   margin: 0;
   text-align: center;
-  font-size: 24px;
+  font-size: 32px;
+  color: white;
 }
 
 .start-button img {
   height: 24px;
   width: 24px;
+  filter: invert(100%) sepia(100%) saturate(0%) hue-rotate(288deg)
+    brightness(102%) contrast(102%);
 }
 
 .instructions {
   position: absolute;
   bottom: 0;
   display: flex;
+  flex-direction: column;
   box-sizing: border-box;
   z-index: 5;
   width: 100%;
+  gap: 0px;
   justify-content: center;
-  gap: 16px;
   align-items: center;
   background-color: #feae00;
   border-bottom-left-radius: 20px;
   border-bottom-right-radius: 20px;
   padding: 10px 0;
-  border: 1px solid black;
-  box-shadow: 0px 0px 9px 10px rgba(0, 0, 0, 0.75);
+  border: 1px solid white;
+  box-shadow: 0px 0px 15px 10px white;
   font-size: 20px;
+  color: white;
 }
 
 .instructions h2 {
   font-size: 24px;
   margin: 0;
   text-align: center;
+}
+
+.instructions-text {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.instructions-information {
+  display: flex;
+  gap: 16px;
+}
+
+.instructions-information a {
+  color: white;
+  text-decoration: none;
+}
+
+.instructions-information a:hover {
+  text-decoration: underline;
+  color: black;
 }
 
 .sound-button {
@@ -128,6 +154,8 @@ h1 {
 .sound-button img {
   height: 32px;
   width: 32px;
+  filter: invert(100%) sepia(100%) saturate(0%) hue-rotate(288deg)
+    brightness(102%) contrast(102%);
 }
 
 .fullscreen-button {
@@ -151,6 +179,8 @@ h1 {
 .fullscreen-button img {
   height: 32px;
   width: 32px;
+  filter: invert(100%) sepia(100%) saturate(0%) hue-rotate(288deg)
+    brightness(102%) contrast(102%);
 }
 
 .loadingscreen-container {
@@ -164,6 +194,7 @@ h1 {
   display: flex;
   align-items: center;
   justify-content: space-evenly;
+  align-items: center;
   font-size: 60px;
   color: #ea9c24;
 }
@@ -175,6 +206,8 @@ h1 {
 
 .canvas-container {
   position: absolute;
+  box-shadow: 0px 0px 15px 10px white;
+  border-radius: 20px;
 }
 
 .losescreen-container {
@@ -217,8 +250,16 @@ h1 {
   cursor: pointer;
 }
 
+.try-again-button img {
+  height: 24px;
+  width: 24px;
+  filter: invert(100%) sepia(100%) saturate(0%) hue-rotate(288deg)
+    brightness(102%) contrast(102%);
+}
+
 .try-again-button h4 {
   margin: 0;
+  color: white;
 }
 
 .back-to-menu-button {
@@ -239,10 +280,13 @@ h1 {
 .back-to-menu-button img {
   height: 24px;
   width: 24px;
+  filter: invert(100%) sepia(100%) saturate(0%) hue-rotate(288deg)
+    brightness(102%) contrast(102%);
 }
 
 .back-to-menu-button h4 {
   margin: 0;
+  color: white;
 }
 
 .lose-image {
@@ -272,7 +316,7 @@ h1 {
 .win-image {
   position: relative;
   box-sizing: border-box;
-  padding: 0 20px;
+  padding: 0 40px;
   top: 25%;
   width: 100%;
 }
@@ -280,7 +324,7 @@ h1 {
 .overlayMobile {
   position: absolute;
   background-color: #cacaca;
-  z-index: 15;
+  z-index: 20;
   height: 100vh;
   width: 100%;
   display: flex;
@@ -305,7 +349,7 @@ h1 {
   flex-direction: column;
   align-items: center;
   padding: 0 40px;
-  z-index: 20;
+  z-index: 15;
   gap: 16px;
 }
 
@@ -322,21 +366,29 @@ h1 {
 }
 
 .mobile-attack-button {
+  background-color: rgba(254, 174, 0, 0.5);
+  border: 2px solid white;
+  border-radius: 10px;
+}
+
+.mobile-attack-button img {
   height: 50px;
   width: 50px;
-  background-color: #feae00;
-  border: 2px solid black;
-  border-radius: 10px;
   object-fit: cover;
 }
 
 .mobile-move-button {
-  height: 32px;
-  width: 32px;
-  background-color: #feae00;
-  border: 2px solid black;
+  background-color: rgba(254, 174, 0, 0.5);
+  border: 2px solid white;
   border-radius: 10px;
   padding: 10px;
+}
+
+.mobile-move-button img {
+  height: 32px;
+  width: 32px;
+  filter: invert(100%) sepia(100%) saturate(0%) hue-rotate(288deg)
+    brightness(102%) contrast(102%);
 }
 
 .d-none {
@@ -349,7 +401,7 @@ h1 {
 }
 
 canvas {
-  background-color: black;
+  background-color: white;
   display: block;
   border-radius: 20px;
 }
@@ -360,14 +412,11 @@ canvas {
   }
 }
 
-@media only screen and (max-height: 480px) {
-  canvas {
-    height: 100vh;
-  }
-}
-
 @media (max-width: 1024px) and (orientation: landscape) {
   .overlayMobile {
+    display: none;
+  }
+  .instructions-text {
     display: none;
   }
   .btn-mobile-wrapper {
@@ -391,8 +440,21 @@ canvas {
   .overlayMobile {
     display: none;
   }
+}
 
-  /*.move-mobile {
-    display: none;
-  }*/
+@media only screen and (max-height: 480px) {
+  .game-content,
+  .losescreen-container,
+  .winscreen-container,
+  canvas {
+    width: 100%;
+    max-height: 100vh;
+  }
+  .startscreen-container {
+    height: 100%;
+  }
+
+  .canvas-container {
+    width: 100%;
+  }
 }
