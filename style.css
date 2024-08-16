@@ -395,6 +395,10 @@ h1 {
   display: none;
 }
 
+.mobile-buttons-activate {
+  display: flex !important;
+}
+
 @font-face {
   font-family: 'Zabars';
   src: url(./fonts/ZABARS/Zabars.ttf);
@@ -419,9 +423,6 @@ canvas {
   .instructions-text {
     display: none;
   }
-  .btn-mobile-wrapper {
-    display: flex !important;
-  }
 }
 
 @media (max-width: 1024px) and (orientation: landscape) and (max-height: 600px) {
@@ -434,6 +435,9 @@ canvas {
   h1 {
     display: none;
   }
+}
+
+@media (max-height: 700px) {
 }
 
 @media (min-width: 800px) {

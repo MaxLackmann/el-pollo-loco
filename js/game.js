@@ -52,7 +52,8 @@ function loadingScreen() {
   setTimeout(() => {
     playStartSounds();
     hideLoadingScreen();
-    showGameButtons();
+    showFullScreenButton();
+    showMobileButtons();
   }, 700);
 }
 
@@ -85,12 +86,19 @@ function playStartSounds() {
   }
 }
 
+function showMobileButtons() {
+  if (window.innerHeight <= 700) {
+    document
+      .getElementById('mobileButtons')
+      .classList.add('mobile-buttons-activate');
+  }
+}
+
 /**
  * Displays the game buttons by removing the 'd-none' class from the 'mobileButtons' and 'fullscreenButton' elements.
  * @return {void} This function does not return a value.
  */
-function showGameButtons() {
-  document.getElementById('mobileButtons').classList.remove('d-none');
+function showFullScreenButton() {
   document.getElementById('fullscreenButton').classList.remove('d-none');
 }
 
@@ -160,7 +168,7 @@ function exitFullScreen() {
  */
 function winGameScreen() {
   showWinScreen();
-  hideGameButtons();
+  hideMobileButtons();
   stopGame();
   exitFullScreen();
   hideFullScreenButton();
@@ -179,8 +187,10 @@ function showWinScreen() {
  * Hides the game buttons by adding the 'd-none' class to the element with the id 'mobileButtons'.
  * @return {void}
  */
-function hideGameButtons() {
-  document.getElementById('mobileButtons').classList.add('d-none');
+function hideMobileButtons() {
+  document
+    .getElementById('mobileButtons')
+    .classList.remove('mobile-buttons-activate');
 }
 
 /**
@@ -191,7 +201,7 @@ function hideGameButtons() {
  */
 function loseGameScreen() {
   showLoseScreen();
-  hideGameButtons();
+  hideMobileButtons();
   stopGame();
   exitFullScreen();
   hideFullScreenButton();
